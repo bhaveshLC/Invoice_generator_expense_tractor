@@ -1,0 +1,56 @@
+<div class="bg-[#2a3158] text-white w-64 min-h-screen flex flex-col justify-between">
+  <div>
+    <div class="p-4">
+      <h1 class="text-2xl font-bold">Invoice Generator</h1>
+    </div>
+
+    <nav class="mt-8">
+      <ul>
+        <li
+          *ngFor="let item of navItems"
+          class="px-4 py-3 flex items-center cursor-pointer hover:bg-[#3a4169] transition-colors"
+          [class.bg-[#3a4169]]="isActive(item.route)"
+          (click)="navigate(item.route)"
+        >
+          <i class="mr-3 text-white" [ngClass]="item.icon"></i>
+          <span>{{ item.label }}</span>
+        </li>
+      </ul>
+    </nav>
+  </div>
+  
+  <div class="p-4 mt-auto">
+    <div
+      class="px-4 py-3 flex items-center cursor-pointer hover:bg-[#3a4169] transition-colors"
+    >
+      <i class="mr-3 fa-solid fa-gear"></i>
+      <span>Options</span>
+    </div>
+    
+    <!-- Account with dropdown -->
+    <div class="relative">
+      <div
+        class="px-4 py-3 flex items-center cursor-pointer hover:bg-[#3a4169] transition-colors"
+        (click)="toggleAccountMenu()"
+      >
+        <i class="mr-3 fa-solid fa-user"></i>
+        <span>Account</span>
+        <i class="ml-auto fa-solid" [ngClass]="{'fa-chevron-down': !showAccountMenu, 'fa-chevron-up': showAccountMenu}"></i>
+      </div>
+      
+      <!-- Dropdown menu -->
+      <div
+        *ngIf="showAccountMenu"
+        class="absolute bottom-full left-0 right-0 mb-1 bg-[#3a4169] rounded-md shadow-lg z-10 overflow-hidden"
+      >
+        <div
+          class="px-4 py-3 hover:bg-[#4a527a] cursor-pointer transition-colors"
+          (click)="logout()"
+        >
+          <i class="mr-3 fa-solid fa-arrow-right-from-bracket"></i>
+          <span>Logout</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

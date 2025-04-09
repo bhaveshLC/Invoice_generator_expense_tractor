@@ -1,5 +1,74 @@
+const Expense = require("../models/expense.model");
 const Invoice = require("../models/invoice.model");
 const { AppError } = require("../utils/errorHandler");
+
+async function getDashboardData(userId) {
+  const invoiceCount = await Invoice.countDocuments({ user: userId });
+
+  const invoiceTotal = await Invoice.aggregate([
+    { $match: { user: userId } },
+    { $group: { _id: null, total: { $sum: "$total" } } },
+  ]);
+
+  const expenseTotal = await Expense.aggregate([
+    { $match: { user: userId } },
+    { $group: { _id: null, total: { $sum: "$amount" } } },
+  ]);
+
+  const expenseChartData = await Expense.aggregate([
+    { $match: { user: userId } },
+    {
+      $group: {
+        _id: { $month: "$date" },
+        total: { $sum: "$amount" },
+      },
+    },
+    {
+      $sort: { _id: 1 },
+    },
+  ]);
+
+  const monthlySummaryData = await Expense.aggregate([
+    { $match: { user: userId } },
+    {
+      $group: {
+        _id: {
+          year: { $year: "$date" },
+          month: { $month: "$date" },
+        },
+        total: { $sum: "$amount" },
+      },
+    },
+    { $sort: { "_id.year": -1, "_id.month": -1 } },
+    { $limit: 6 },
+  ]);
+
+  return {
+    invoiceCount,
+    invoiceTotal: invoiceTotal[0]?.total || 0,
+    expenseTotal: expenseTotal[0]?.total || 0,
+    expenseChartData: {
+      labels: expenseChartData.map((e) => `Month ${e._id}`),
+      datasets: [
+        {
+          data: expenseChartData.map((e) => e.total),
+          backgroundColor: "#4f86f7",
+        },
+      ],
+    },
+    monthlySummaryData: {
+      labels: monthlySummaryData
+        .map((d) => `${d._id.month}/${d._id.year}`)
+        .reverse(),
+      datasets: [
+        {
+          data: monthlySummaryData.map((d) => d.total).reverse(),
+          backgroundColor: "#4f86f7",
+        },
+      ],
+    },
+  };
+}
 
 async function createInvoice(userId, invoiceData) {
   invoiceData.user = userId;
@@ -58,6 +127,7 @@ async function deleteInvoice(invoiceId, userId) {
 }
 
 module.exports = {
+  getDashboardData,
   createInvoice,
   getInvoices,
   getInvoiceById,

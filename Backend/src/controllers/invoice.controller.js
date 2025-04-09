@@ -1,4 +1,11 @@
 const invoiceService = require("../services/invoice.service");
+const getDashboardData = async (req, res) => {
+  const data = await invoiceService.getDashboardData(req.userId);
+  res.status(200).json({
+    status: "success",
+    data,
+  });
+};
 const createInvoice = async (req, res) => {
   const invoice = await invoiceService.createInvoice(req.userId, req.body);
   res.status(201).json({
@@ -51,6 +58,7 @@ const deleteInvoice = async (req, res) => {
   });
 };
 module.exports = {
+  getDashboardData,
   createInvoice,
   getInvoices,
   getInvoiceById,
