@@ -1,0 +1,547 @@
+<div class="max-w-4xl mx-auto p-4">
+  <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+    <div class="bg-gray-800 text-white p-4">
+      <div class="flex mt-4">
+        <div class="flex-1">
+          <div class="relative">
+            <div class="flex items-center">
+              <div
+                class="z-10 flex items-center justify-center w-8 h-8 rounded-full"
+                [ngClass]="{
+                  'bg-blue-500': currentStep >= 1,
+                  'bg-gray-600': currentStep < 1
+                }"
+              >
+                <span class="text-white font-medium">1</span>
+              </div>
+              <div class="flex-1 ml-4">
+                <p
+                  class="text-sm font-medium"
+                  [ngClass]="{
+                    'text-blue-300': currentStep === 1,
+                    'text-white': currentStep !== 1
+                  }"
+                >
+                  Client Details
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="w-[60%] mr-4 flex items-center justify-center">
+          <div
+            class="h-1 w-full rounded"
+            [ngClass]="{
+              'bg-blue-500': currentStep >= 2,
+              'bg-gray-600': currentStep < 2
+            }"
+          ></div>
+        </div>
+        <div class="flex-1">
+          <div class="relative">
+            <div class="flex items-center">
+              <div
+                class="z-10 flex items-center justify-center w-8 h-8 rounded-full"
+                [ngClass]="{
+                  'bg-blue-500': currentStep >= 2,
+                  'bg-gray-600': currentStep < 2
+                }"
+              >
+                <span class="text-white font-medium">2</span>
+              </div>
+              <div class="flex-1 ml-4">
+                <p
+                  class="text-sm font-medium"
+                  [ngClass]="{
+                    'text-blue-300': currentStep === 2,
+                    'text-white': currentStep !== 2
+                  }"
+                >
+                  Invoice Items
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <form [formGroup]="invoiceForm" (ngSubmit)="onSubmit()" class="p-6">
+      <div *ngIf="currentStep === 1" class="space-y-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="space-y-4">
+            <h3 class="text-lg font-semibold border-b pb-2">
+              Client Information
+            </h3>
+
+            <div class="space-y-4">
+              <div>
+                <label
+                  for="clientName"
+                  class="block text-sm font-medium text-gray-700"
+                  >Client Name</label
+                >
+                <input
+                  type="text"
+                  id="clientName"
+                  formControlName="clientName"
+                  class="mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                  [ngClass]="{
+                    'border-red-500':
+                      invoiceForm.get('clientName')?.invalid &&
+                      invoiceForm.get('clientName')?.touched
+                  }"
+                />
+                <p
+                  *ngIf="
+                    invoiceForm.get('clientName')?.invalid &&
+                    invoiceForm.get('clientName')?.touched
+                  "
+                  class="mt-1 text-sm text-red-600"
+                >
+                  Client name is required
+                </p>
+              </div>
+
+              <div>
+                <label
+                  for="clientEmail"
+                  class="block text-sm font-medium text-gray-700"
+                  >Client Email</label
+                >
+                <input
+                  type="email"
+                  id="clientEmail"
+                  formControlName="clientEmail"
+                  class="mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                  [ngClass]="{
+                    'border-red-500':
+                      invoiceForm.get('clientEmail')?.invalid &&
+                      invoiceForm.get('clientEmail')?.touched
+                  }"
+                />
+                <p
+                  *ngIf="
+                    invoiceForm.get('clientEmail')?.invalid &&
+                    invoiceForm.get('clientEmail')?.touched
+                  "
+                  class="mt-1 text-sm text-red-600"
+                >
+                  <span
+                    *ngIf="invoiceForm.get('clientEmail')?.errors?.['required']"
+                    >Email is required</span
+                  >
+                  <span
+                    *ngIf="invoiceForm.get('clientEmail')?.errors?.['email']"
+                    >Please enter a valid email</span
+                  >
+                </p>
+              </div>
+
+              <div>
+                <label
+                  for="clientAddress"
+                  class="block text-sm font-medium text-gray-700"
+                  >Client Address</label
+                >
+                <textarea
+                  id="clientAddress"
+                  formControlName="clientAddress"
+                  rows="3"
+                  class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                  [ngClass]="{
+                    'border-red-500':
+                      invoiceForm.get('clientAddress')?.invalid &&
+                      invoiceForm.get('clientAddress')?.touched
+                  }"
+                ></textarea>
+                <p
+                  *ngIf="
+                    invoiceForm.get('clientAddress')?.invalid &&
+                    invoiceForm.get('clientAddress')?.touched
+                  "
+                  class="mt-1 text-sm text-red-600"
+                >
+                  Address is required
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="space-y-4">
+            <h3 class="text-lg font-semibold border-b pb-2">Invoice Details</h3>
+
+            <div class="space-y-4">
+              <div>
+                <label
+                  for="invoiceDate"
+                  class="block text-sm font-medium text-gray-700"
+                  >Invoice Date</label
+                >
+                <input
+                  type="date"
+                  id="invoiceDate"
+                  formControlName="invoiceDate"
+                  class="mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                  [ngClass]="{
+                    'border-red-500':
+                      invoiceForm.get('invoiceDate')?.invalid &&
+                      invoiceForm.get('invoiceDate')?.touched
+                  }"
+                />
+                <p
+                  *ngIf="
+                    invoiceForm.get('invoiceDate')?.invalid &&
+                    invoiceForm.get('invoiceDate')?.touched
+                  "
+                  class="mt-1 text-sm text-red-600"
+                >
+                  Invoice date is required
+                </p>
+              </div>
+
+              <div>
+                <label
+                  for="dueDate"
+                  class="block text-sm font-medium text-gray-700"
+                  >Due Date</label
+                >
+                <input
+                  type="date"
+                  id="dueDate"
+                  formControlName="dueDate"
+                  class="mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                  [ngClass]="{
+                    'border-red-500':
+                      invoiceForm.get('dueDate')?.invalid &&
+                      invoiceForm.get('dueDate')?.touched
+                  }"
+                />
+                <p
+                  *ngIf="
+                    invoiceForm.get('dueDate')?.invalid &&
+                    invoiceForm.get('dueDate')?.touched
+                  "
+                  class="mt-1 text-sm text-red-600"
+                >
+                  Due date is required
+                </p>
+              </div>
+
+              <div>
+                <label
+                  for="status"
+                  class="block text-sm font-medium text-gray-700"
+                  >Status</label
+                >
+                <select
+                  id="status"
+                  formControlName="status"
+                  class="mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                >
+                  <option value="Paid">Paid</option>
+                  <option value="Unpaid">Unpaid</option>
+                  <option value="Overdue">Overdue</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex justify-between pt-4">
+          <button
+            type="button"
+            class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300"
+            (click)="loadSampleData()"
+          >
+            Load Sample Data
+          </button>
+          <button
+            type="button"
+            class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+            (click)="nextStep()"
+          >
+            Next Step
+          </button>
+        </div>
+      </div>
+
+      <div *ngIf="currentStep === 2" class="space-y-6">
+        <div class="space-y-4">
+          <div class="flex justify-between items-center">
+            <h3 class="text-lg font-semibold">Invoice Items</h3>
+            <button
+              type="button"
+              class="px-3 py-1 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-sm flex items-center"
+              (click)="addItem()"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-4 w-4 mr-1"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 4v16m8-8H4"
+                />
+              </svg>
+              Add Item
+            </button>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+              <thead class="bg-gray-50">
+                <tr>
+                  <th
+                    scope="col"
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Item
+                  </th>
+                  <th
+                    scope="col"
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Qty
+                  </th>
+                  <th
+                    scope="col"
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Price
+                  </th>
+                  <th
+                    scope="col"
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Total
+                  </th>
+                  <th
+                    scope="col"
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  ></th>
+                </tr>
+              </thead>
+              <tbody
+                class="bg-white divide-y divide-gray-200"
+                formArrayName="items"
+              >
+                <tr
+                  *ngFor="let item of items.controls; let i = index"
+                  [formGroupName]="i"
+                >
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <input
+                      type="text"
+                      formControlName="itemName"
+                      class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                      [ngClass]="{
+                        'border-red-500':
+                          item.get('itemName')?.invalid &&
+                          item.get('itemName')?.touched
+                      }"
+                    />
+                    <p
+                      *ngIf="
+                        item.get('itemName')?.invalid &&
+                        item.get('itemName')?.touched
+                      "
+                      class="mt-1 text-xs text-red-600"
+                    >
+                      Required
+                    </p>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <input
+                      type="number"
+                      formControlName="quantity"
+                      class="block w-20 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                      [ngClass]="{
+                        'border-red-500':
+                          item.get('quantity')?.invalid &&
+                          item.get('quantity')?.touched
+                      }"
+                    />
+                    <p
+                      *ngIf="
+                        item.get('quantity')?.invalid &&
+                        item.get('quantity')?.touched
+                      "
+                      class="mt-1 text-xs text-red-600"
+                    >
+                      Min 1
+                    </p>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <input
+                      type="number"
+                      formControlName="price"
+                      class="block w-24 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                      [ngClass]="{
+                        'border-red-500':
+                          item.get('price')?.invalid &&
+                          item.get('price')?.touched
+                      }"
+                    />
+                    <p
+                      *ngIf="
+                        item.get('price')?.invalid && item.get('price')?.touched
+                      "
+                      class="mt-1 text-xs text-red-600"
+                    >
+                      Min 0
+                    </p>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap font-medium">
+                    ₹{{
+                      (item.get("quantity")?.value || 0) *
+                        (item.get("price")?.value || 0)
+                    }}
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-right">
+                    <button
+                      type="button"
+                      class="text-red-600 hover:text-red-900"
+                      (click)="removeItem(i)"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        class="h-5 w-5"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                        />
+                      </svg>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="space-y-4">
+            <h3 class="text-lg font-semibold border-b pb-2">
+              Additional Details
+            </h3>
+
+            <div>
+              <label
+                for="taxRate"
+                class="block text-sm font-medium text-gray-700"
+                >Tax Rate (%)</label
+              >
+              <input
+                type="number"
+                id="taxRate"
+                formControlName="taxRate"
+                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                [ngClass]="{
+                  'border-red-500':
+                    invoiceForm.get('taxRate')?.invalid &&
+                    invoiceForm.get('taxRate')?.touched
+                }"
+              />
+              <p
+                *ngIf="
+                  invoiceForm.get('taxRate')?.invalid &&
+                  invoiceForm.get('taxRate')?.touched
+                "
+                class="mt-1 text-sm text-red-600"
+              >
+                Tax rate must be between 0 and 100
+              </p>
+            </div>
+
+            <div>
+              <label
+                for="discount"
+                class="block text-sm font-medium text-gray-700"
+                >Discount (%)</label
+              >
+              <input
+                type="number"
+                id="discount"
+                formControlName="discount"
+                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                [ngClass]="{
+                  'border-red-500':
+                    invoiceForm.get('discount')?.invalid &&
+                    invoiceForm.get('discount')?.touched
+                }"
+              />
+              <p
+                *ngIf="
+                  invoiceForm.get('discount')?.invalid &&
+                  invoiceForm.get('discount')?.touched
+                "
+                class="mt-1 text-sm text-red-600"
+              >
+                Discount must be at least 0
+              </p>
+            </div>
+          </div>
+
+          <div class="space-y-4">
+            <h3 class="text-lg font-semibold border-b pb-2">Summary</h3>
+
+            <div class="bg-gray-50 p-4 rounded-md">
+              <div class="flex justify-between py-2">
+                <span class="text-gray-600">Subtotal:</span>
+                <span class="font-medium">₹{{ subtotal }}</span>
+              </div>
+              <div class="flex justify-between py-2">
+                <span class="text-gray-600"
+                  >Tax ({{ invoiceForm.get("taxRate")?.value || 0 }}%):</span
+                >
+                <span class="font-medium">₹{{ taxAmount }}</span>
+              </div>
+              <div class="flex justify-between py-2">
+                <span class="text-gray-600"
+                  >Discount:({{
+                    invoiceForm.get("discount")?.value || 0
+                  }}%)</span
+                >
+                <span class="font-medium">₹{{ discountAmount }}</span>
+              </div>
+              <div class="border-t mt-2 pt-2">
+                <div class="flex justify-between">
+                  <span class="font-bold">Total:</span>
+                  <span class="font-bold text-blue-600">₹{{ grandTotal }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex justify-between pt-4">
+          <button
+            type="button"
+            class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300"
+            (click)="previousStep()"
+          >
+            Previous Step
+          </button>
+          <button
+            type="submit"
+            class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:bg-green-300 disabled:cursor-not-allowed"
+            [disabled]="invoiceForm.invalid"
+          >
+            Generate Invoice
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

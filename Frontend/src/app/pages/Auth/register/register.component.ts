@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
+import { AuthService } from '../../../core/service/Auth/auth.service';
 
 @Component({
   selector: 'app-register',
@@ -12,7 +13,7 @@ import { Router, RouterLink } from '@angular/router';
 export class RegisterComponent {
   registerForm: FormGroup
   router = inject(Router)
-  
+  authService = inject(AuthService)
   isLoading: boolean = false
   constructor(
     private fb: FormBuilder,
@@ -23,16 +24,22 @@ export class RegisterComponent {
       password: ["", [Validators.required, Validators.minLength(6)]],
     })
   }
-
   onSubmit() {
     this.isLoading = true
 
     if (this.registerForm.valid) {
-      setTimeout(() => {
-        this.isLoading = false
-      }, 3000);
-      // this.router.navigate(["/login"])
+      this.authService.register(this.registerForm.value).subscribe({
+        next: (res: any) => {
+          this.isLoading = false
+          if (res.status == 'success') {
+            this.router.navigate(['/login'])
+          }
+        }
+        , error: (err) => {
+          this.isLoading = false
+          console.log(err)
+        }
+      })
     }
   }
-
 }

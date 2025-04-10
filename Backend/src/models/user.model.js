@@ -27,7 +27,7 @@ userSchema.methods.comparePassword = function (candidatePassword) {
 };
 userSchema.methods.generateAuthToken = function () {
   const token = jwt.sign({ _id: this._id }, process.env.JWT_SECRET, {
-    expiresIn: "1h",
+    expiresIn: process.env.JWT_EXPIRES_IN,
   });
   return token;
 };

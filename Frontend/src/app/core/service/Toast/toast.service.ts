@@ -23,7 +23,6 @@ export class ToastService {
     const newToast = { ...toast, id };
 
     this.toasts.next([...this.toasts.value, newToast]);
-
     if (duration > 0) {
       setTimeout(() => {
         this.remove(id);

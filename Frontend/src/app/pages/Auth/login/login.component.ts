@@ -26,7 +26,7 @@ export class LoginComponent {
   onSubmit() {
     this.authService.login(this.loginForm.value).subscribe((res: any) => {
       if (res.status === 'success') {
-        localStorage.setItem('token', res.token)
+        localStorage.setItem('token', res.data.token)
         this.router.navigateByUrl('/dashboard')
       }
     }, (err) => {

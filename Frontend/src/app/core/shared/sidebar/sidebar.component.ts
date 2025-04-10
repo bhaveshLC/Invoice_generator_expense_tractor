@@ -10,6 +10,7 @@ import { Router, RouterLink } from '@angular/router';
 })
 export class SidebarComponent {
   showAccountMenu: boolean = false
+
   navItems: any[] = [
     { icon: "fa-solid fa-grip", label: "Dashboard", route: "/dashboard" },
     { icon: "fa-solid fa-file-lines", label: "Invoices", route: "/invoices" },
