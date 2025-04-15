@@ -1,0 +1,203 @@
+<div class="bg-white rounded-lg shadow-lg p-6">
+  <div class="flex justify-between items-start mb-8">
+    <div>
+      <h1 class="text-2xl font-bold text-gray-800">
+        Invoice #{{ invoice?._id }}
+      </h1>
+      <p class="text-gray-500">
+        {{ invoice?.invoiceDate | date : "longDate" }}
+      </p>
+    </div>
+    <div class="flex space-x-2">
+      <button
+        (click)="goBack()"
+        class="px-2 py-1 border border-gray-300 text-sm rounded-md text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 cursor-pointer"
+      >
+        Back
+      </button>
+      <button
+        (click)="printInvoice()"
+        class="px-2 py-1 bg-blue-500 text-white text-sm rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 flex items-center cursor-pointer"
+      >
+        <svg
+          class="w-4 h-4 mr-1"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"
+          ></path>
+        </svg>
+        Print
+      </button>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+    <div>
+      <h2 class="text-lg font-semibold mb-2">From</h2>
+      <div class="text-gray-700">
+        <p class="font-medium">Your Company Name</p>
+        <p>123 Business Street</p>
+        <p>City, State 12345</p>
+        <p>contactyourcompany.com</p>
+        <p>+1 (555) 123-4567</p>
+      </div>
+    </div>
+
+    <div>
+      <h2 class="text-lg font-semibold mb-2">Bill To</h2>
+      <div class="text-gray-700">
+        <p class="font-medium">{{ invoice?.clientName }}</p>
+        <p>{{ invoice?.clientEmail }}</p>
+        <p class="whitespace-pre-line">{{ invoice?.clientAddress }}</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+    <div class="bg-gray-50 p-4 rounded-md">
+      <p class="text-sm text-gray-500">Invoice Date</p>
+      <p class="font-medium">
+        {{ invoice?.invoiceDate | date : "mediumDate" }}
+      </p>
+    </div>
+    <div class="bg-gray-50 p-4 rounded-md">
+      <p class="text-sm text-gray-500">Due Date</p>
+      <p class="font-medium">{{ invoice?.dueDate | date : "mediumDate" }}</p>
+    </div>
+    <div class="bg-gray-50 p-4 rounded-md">
+      <p class="text-sm text-gray-500">Status</p>
+      <div class="flex gap-2">
+        <p class="font-medium">
+          <span
+            class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full"
+            [ngClass]="{
+              'bg-green-100 text-green-800': invoice?.status === 'Paid',
+              'bg-yellow-100 text-yellow-800': invoice?.status === 'Unpaid',
+              'bg-red-100 text-red-800': invoice?.status === 'Overdue'
+            }"
+          >
+            {{ invoice?.status }}
+          </span>
+        </p>
+        <button
+          *ngIf="invoice?.status == 'Unpaid'"
+          class="text-xs px-2 py-1 text-white font-semibold bg-green-500 rounded-2xl hover:bg-green-600 cursor-pointer"
+          (click)="markAsPaid()"
+        >
+          Mark as paid
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="mb-8">
+    <h2 class="text-lg font-semibold mb-4">Items</h2>
+    <div class="overflow-x-auto">
+      <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gray-50">
+          <tr>
+            <th
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >
+              Item
+            </th>
+            <th
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >
+              Quantity
+            </th>
+            <th
+              class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >
+              Price
+            </th>
+            <th
+              class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >
+              Total
+            </th>
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+          <tr *ngFor="let item of invoice?.items">
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+              {{ item.itemName }}
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+              {{ item.quantity }}
+            </td>
+            <td
+              class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 text-right"
+            >
+              {{ item.price | currency : "INR" }}
+            </td>
+            <td
+              class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 text-right"
+            >
+              {{ item.quantity * item.price | currency : "INR" }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="flex justify-end">
+    <div class="w-full md:w-1/2 lg:w-1/3">
+      <div class="border-t pt-4">
+        <div class="flex justify-between mb-2">
+          <span class="text-gray-600">Subtotal:</span>
+          <span class="font-medium">{{
+            calculateSubtotal() | currency : "INR"
+          }}</span>
+        </div>
+        <div class="flex justify-between mb-2">
+          <span class="text-gray-600">Tax ({{ invoice?.taxRate }}%):</span>
+          <span class="font-medium">{{
+            calculateTaxAmount() | currency : "INR"
+          }}</span>
+        </div>
+        <div class="flex justify-between mb-4">
+          <span class="text-gray-600">Discount:</span>
+          <span class="font-medium">{{
+            invoice?.discount | currency : "INR"
+          }}</span>
+        </div>
+        <div class="flex justify-between pt-2 border-t border-gray-300">
+          <span class="text-gray-800 font-semibold">Total:</span>
+          <span class="text-xl font-bold">{{
+            calculateTotal() | currency : "INR"
+          }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-8 pt-6 border-t border-gray-200">
+    <h2 class="text-lg font-semibold mb-2">Notes</h2>
+    <p class="text-gray-700">{{ invoice?.note || "NA" }}</p>
+  </div>
+</div>
+
+<app-confirmation-dialog
+  *ngIf="showDeleteConfirmation"
+  title="Delete Invoice"
+  message="Are you sure you want to delete this expense? You will not able to recover this."
+  (confirm)="completePayment()"
+  (cancel)="cancelPayment()"
+></app-confirmation-dialog>
+<app-confirmation-dialog
+  *ngIf="showPaymentConfirmation"
+  title="Confirm Payment"
+  message="Are you sure you want to mark this invoice as paid? This action will update the invoice status."
+  (confirm)="completePayment()"
+  (cancel)="cancelPayment()"
+  buttonColor="bg-green-600"
+></app-confirmation-dialog>

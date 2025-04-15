@@ -13,30 +13,26 @@ export interface Toast {
   providedIn: 'root'
 })
 export class ToastService {
-  private toasts = new BehaviorSubject<Toast[]>([]);
-  notifications$ = this.toasts.asObservable();
-  private currentId = 0;
+  private toastsSubject = new BehaviorSubject<Toast[]>([]);
+  toasts$ = this.toastsSubject.asObservable();
 
-  show(toast: Toast) {
-    const id = this.currentId++;
-    const duration = toast.duration || 5000;
-    const newToast = { ...toast, id };
+  private counter = 0;
 
-    this.toasts.next([...this.toasts.value, newToast]);
-    if (duration > 0) {
-      setTimeout(() => {
-        this.remove(id);
-      }, duration);
-    }
+  showAlert(type: Toast['type'], title: string, message: string) {
+    const newToast: Toast = {
+      id: ++this.counter,
+      type,
+      title,
+      message,
+    };
+    const current = this.toastsSubject.value;
+    this.toastsSubject.next([...current, newToast]);
+
+    setTimeout(() => this.close(newToast.id || 0), 3000);
   }
 
-  remove(id: number) {
-    this.toasts.next(
-      this.toasts.value.filter(toast => toast.id !== id)
-    );
-  }
-
-  clearAll() {
-    this.toasts.next([]);
+  close(id: number) {
+    const current = this.toastsSubject.value;
+    this.toastsSubject.next(current.filter(toast => toast.id !== id));
   }
 }

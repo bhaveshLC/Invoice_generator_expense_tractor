@@ -57,10 +57,18 @@ const deleteBudget = async (req, res) => {
     data: null,
   });
 };
+const getBudgetSummary = async (req, res) => {
+  const summary = await budgetService.getBudgetSummary(req.userId, req.query);
+  res.status(200).json({
+    status: "success",
+    data: summary,
+  });
+};
 module.exports = {
   createBudget,
   getBudgets,
   getBudgetByCategory,
   updateBudget,
   deleteBudget,
+  getBudgetSummary,
 };

@@ -14,10 +14,10 @@ export class ExpenseService {
   addExpense(data: any) {
     return this.httpService.post('expense', data);
   }
-  updateExpense(data: any) {
-    return this.httpService.put('expense/:id', data);
+  updateExpense(id: string, data: any) {
+    return this.httpService.put(`expense/${id}`, data);
   }
   removeExpense(id: string) {
-    return this.httpService.delete('expense/:id')
+    return this.httpService.delete(`expense/${id}`)
   }
 }

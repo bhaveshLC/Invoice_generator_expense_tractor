@@ -33,7 +33,7 @@ export class AddInvoiceComponent {
   taxAmount = 0
   discountAmount = 0
   grandTotal = 0
-
+  error = ''
   constructor(private fb: FormBuilder) { }
   invoiceService = inject(InvoiceService)
   ngOnInit(): void {
@@ -90,7 +90,10 @@ export class AddInvoiceComponent {
       this.items.removeAt(index)
     }
     else {
-      alert('Atleast 1 item is required')
+      this.error = 'Atleast 1 item is required.'
+      setTimeout(() => {
+        this.error = ''
+      }, 3000);
     }
   }
 

@@ -34,7 +34,7 @@ export class ChartComponent implements OnInit, OnChanges {
     if (!this.chartCanvas) return
 
     const ctx = this.chartCanvas.nativeElement.getContext("2d")
-
+    console.log(this.data)
     this.chart = new Chart(ctx, {
       type: this.type,
       data: {

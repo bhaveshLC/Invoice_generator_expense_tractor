@@ -1,11 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { SidebarComponent } from "../../core/shared/sidebar/sidebar.component";
 import { InvoiceService } from '../../core/service/invoice/invoice.service';
 import { CommonModule, DatePipe } from '@angular/common';
 import { AddInvoiceComponent } from "../components/add-invoice/add-invoice.component";
 import { ConfirmationDialogComponent } from "../../core/shared/confirmation-dialog/confirmation-dialog.component";
 import { EditInvoiceComponent } from "../components/edit-invoice/edit-invoice.component";
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-invoice-list',
@@ -19,6 +19,7 @@ export class InvoiceListComponent {
   showEditInvoiceModal = false;
   showDeleteConfirmation = false
   currentInvoice: any;
+  router = inject(Router)
   constructor(private invoiceService: InvoiceService) { }
 
   ngOnInit(): void {
@@ -69,6 +70,9 @@ export class InvoiceListComponent {
         console.error("Error paying invoice", error)
       },
     )
+  }
+  onView(id: string) {
+    this.router.navigateByUrl(`/invoices/${id}`)
   }
   onEditInvoice(invoice: any) {
     this.currentInvoice = invoice;

@@ -10,16 +10,24 @@ export class InvoiceService {
   getInvoices() {
     return this.httpService.get('invoices')
   }
-  getInvoice(id: number) {
+  getInvoice(id: string) {
     return this.httpService.get('invoices/' + id)
   }
   createInvoice(body: any) {
     return this.httpService.post('invoices', body)
   }
-  updateInvoice(id: number, body: any) {
+  updateInvoice(id: string, body: any) {
     return this.httpService.put('invoices/' + id, body)
   }
-  deleteInvoice(id: number) {
+  deleteInvoice(id: string) {
     return this.httpService.delete('invoices/' + id)
+  }
+  getInvoicePDF(id: string) {
+    return this.httpService.get(`invoices/pdf/${id}`, {
+      responseType: 'blob' as 'json'
+    });
+  }
+  markInvoiceAsPaid(id: string) {
+    return this.httpService.put(`invoices/paid/${id}`, {});
   }
 }

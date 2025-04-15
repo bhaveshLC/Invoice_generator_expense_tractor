@@ -6,7 +6,14 @@ const expenseSchema = new mongoose.Schema(
     amount: { type: Number, required: true },
     category: {
       type: String,
-      enum: ["Food", "Transport", "Utilities", "Other"],
+      enum: [
+        "Food",
+        "Transport",
+        "Utilities",
+        "Entertainment",
+        "Shopping",
+        "Other",
+      ],
       default: "Other",
     },
     date: { type: Date, default: Date.now },

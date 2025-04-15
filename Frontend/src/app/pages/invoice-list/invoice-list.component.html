@@ -26,7 +26,7 @@
       </div>
     </div>
 
-    <div class="bg-white rounded-lg shadow overflow-hidden">
+    <div class="bg-white rounded-lg shadow overflow-auto">
       <table class="min-w-full divide-y divide-gray-200">
         <thead class="bg-gray-50">
           <tr>
@@ -95,6 +95,12 @@
               </span>
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              <button
+                class="text-blue-600 hover:text-blue-900 mr-3 cursor-pointer"
+                (click)="onView(invoice._id)"
+              >
+                View
+              </button>
               <button
                 class="text-indigo-600 hover:text-indigo-900 mr-3 cursor-pointer"
                 (click)="onEditInvoice(invoice)"

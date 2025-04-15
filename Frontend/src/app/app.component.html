@@ -1,12 +1,2 @@
-<div class="min-h-screen bg-gray-100">
-  <div *ngIf="!isAuthRoute()" class="flex">
-    <app-sidebar></app-sidebar>
-    <div class="flex-1 p-6">
-      <router-outlet></router-outlet>
-    </div>
-  </div>
-
-  <div *ngIf="isAuthRoute()">
-    <router-outlet></router-outlet>
-  </div>
-</div>
+<router-outlet></router-outlet>
+<app-toast></app-toast>

@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Output } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ExpenseService } from '../../../core/service/expense/expense.service';
 
 @Component({
   selector: 'app-add-expense',
@@ -14,6 +15,7 @@ export class AddExpenseComponent {
 
   expenseForm: FormGroup | any
   loading = false
+  expenseService = inject(ExpenseService)
 
   constructor(private formBuilder: FormBuilder) { }
 
@@ -38,17 +40,16 @@ export class AddExpenseComponent {
     this.loading = true
 
     const expense: any = {
-      id: Math.random().toString(36).substr(2, 9),
       title: this.expenseForm.value.title,
       amount: this.expenseForm.value.amount,
       category: this.expenseForm.value.category,
       date: new Date(this.expenseForm.value.date),
     }
-
-    // Simulate API delay
-    setTimeout(() => {
-      this.save.emit(expense)
+    this.expenseService.addExpense(expense).subscribe(res => {
+      alert('New Expense is added.')
+      this.save.emit()
       this.loading = false
-    }, 500)
+
+    })
   }
 }
