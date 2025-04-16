@@ -4,10 +4,11 @@ import { ConfirmationDialogComponent } from "../../core/shared/confirmation-dial
 import { CommonModule, CurrencyPipe } from '@angular/common';
 import { AddBudgetComponent } from "../components/add-budget/add-budget.component";
 import { ToastService } from '../../core/service/Toast/toast.service';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-budget-list',
-  imports: [CommonModule, CurrencyPipe, ConfirmationDialogComponent, AddBudgetComponent],
+  imports: [FormsModule, CommonModule, CurrencyPipe, ConfirmationDialogComponent, AddBudgetComponent],
   templateUrl: './budget-list.component.html',
   styleUrl: './budget-list.component.css'
 })
@@ -19,23 +20,27 @@ export class BudgetListComponent {
     startDate: Date;
     endDate: Date;
   }[] = [];
-  budgetSummaries: { category: string; spentAmount: number; budgetAmount: number; percentageSpent: number; remainingAmount: number; }[] = []; showBudgetModal = false
+  budgetSummaries: { category: string; spentAmount: number; budgetAmount: number; percentageSpent: number; remainingAmount: number; }[] = [];
+  showBudgetModal = false
   showDeleteConfirmation = false
   currentBudget: any
   isEditMode = false
   loading = false
   toastService = inject(ToastService)
+  availableYears: number[] = []
+  selectedMonth: any
+  selectedYear: any
   constructor(private budgetService: BudgetService) { }
-
+  month_Year: any
   ngOnInit(): void {
+    this.initializeMonthYear()
     this.loadBudgets()
     this.loadBudgetSummaries()
   }
 
   loadBudgets(): void {
     this.loading = true
-
-    this.budgetService.getBudgets().subscribe({
+    this.budgetService.getBudgets(this.month_Year).subscribe({
       next: (res: any) => {
         this.budgets = res.data.budgets.map((budget: any) => ({
           ...budget,
@@ -47,12 +52,24 @@ export class BudgetListComponent {
       }
     });
   }
+  initializeMonthYear() {
+    const date = new Date();
+    const year = date.getFullYear();
+    let month = (date.getMonth() + 1).toString().padStart(2, '0');
+    this.month_Year = `${year}-${month}`;
+  }
 
+  onMonthChange() {
+    this.loadBudgets();
+    this.loadBudgetSummaries()
+  }
   loadBudgetSummaries(): void {
-    this.budgetService.getBudgetSummary().subscribe(
+    console.log(this.month_Year)
+    this.budgetService.getBudgetSummary(this.month_Year).subscribe(
       (res: any) => {
         console.log(res)
         this.budgetSummaries = res.data
+        console.log('summary', this.budgetSummaries)
         this.loading = false
       },
       (error) => {

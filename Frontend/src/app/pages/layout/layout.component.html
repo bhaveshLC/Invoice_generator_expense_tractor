@@ -1,7 +1,41 @@
 <div class="relative min-h-screen bg-gray-100">
-    <app-sidebar></app-sidebar>  
-    <div class="ml-64 p-6">
-      <router-outlet></router-outlet>
-    </div>
+  <button
+    class="md:hidden absolute top-4 left-3 z-10 p-2 bg-[#2a3158] text-white rounded cursor-pointer"
+    (click)="toggleSidebar()"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke-width="1.5"
+      stroke="currentColor"
+      class="w-6 h-6"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
+      />
+    </svg>
+  </button>
+
+  <app-sidebar
+    [ngClass]="{
+      hidden: !isSidebarVisible,
+      block: isSidebarVisible,
+      'md:block': true
+    }"
+    class="fixed md:static z-20 w-64 bg-white h-full shadow-md"
+    (closeSideBar)="toggleSidebar()"
+  ></app-sidebar>
+
+  <div
+    [ngClass]="{
+      'ml-0': !isSidebarVisible,
+      'md:ml-64': true
+    }"
+    class="transition-all duration-300 p-4"
+  >
+    <router-outlet></router-outlet>
   </div>
-  
+</div>

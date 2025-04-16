@@ -87,11 +87,27 @@ async function createInvoice(userId, invoiceData) {
   return invoice;
 }
 
-async function getInvoices(userId) {
-  const invoices = await Invoice.find({ user: userId }).sort({
-    createdAt: -1,
-  });
-  return invoices;
+async function getInvoices(userId, query) {
+  if (!query.page) {
+    const invoices = await Invoice.find().sort({ createdAt: -1 });
+    return invoices;
+  }
+  const page = Number(query.page);
+  const limit = 10;
+  const totalCount = await Invoice.countDocuments({ user: userId });
+  const invoices = await Invoice.find({ user: userId })
+    .skip((page - 1) * limit)
+    .limit(limit)
+    .sort({
+      createdAt: -1,
+    });
+  return {
+    page,
+    limit,
+    totalCount,
+    totalPages: Math.ceil(totalCount / limit),
+    invoices,
+  };
 }
 
 async function getInvoiceById(invoiceId, userId) {

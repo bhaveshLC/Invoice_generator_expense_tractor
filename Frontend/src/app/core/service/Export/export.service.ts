@@ -9,12 +9,12 @@ export class ExportService {
   constructor() { }
   httpService = inject(HttpService);
   exportExpenseToExcel() {
-    return this.httpService.get('export/expense', {
+    return this.httpService.getWithOptional('export/expense', {
       responseType: 'blob' as 'json'
     })
   }
   exportInvoiceToExcel() {
-    return this.httpService.get('export/invoice', {
+    return this.httpService.getWithOptional('export/invoice', {
       responseType: 'blob' as 'json'
     })
   }

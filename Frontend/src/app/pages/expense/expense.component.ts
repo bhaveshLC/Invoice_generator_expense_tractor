@@ -3,10 +3,13 @@ import { AddExpenseComponent } from "../components/add-expense/add-expense.compo
 import { CommonModule, DatePipe } from '@angular/common';
 import { ExpenseService } from '../../core/service/expense/expense.service';
 import { ConfirmationDialogComponent } from "../../core/shared/confirmation-dialog/confirmation-dialog.component";
+import { category } from '../../Evironment';
+import { FormsModule } from '@angular/forms';
+import { PaginationComponent } from "../../core/shared/pagination/pagination.component";
 
 @Component({
   selector: 'app-expense',
-  imports: [CommonModule, AddExpenseComponent, DatePipe, ConfirmationDialogComponent],
+  imports: [FormsModule, CommonModule, AddExpenseComponent, DatePipe, ConfirmationDialogComponent, PaginationComponent],
   templateUrl: './expense.component.html',
   styleUrl: './expense.component.css'
 })
@@ -15,23 +18,45 @@ export class ExpenseComponent {
   showAddExpenseModal = false
   showDeleteConfirmation = false
   currentExpense: any
+  categories = category;
+  filters = {
+    minPrice: 0,
+    category: '',
+    monthYear: '',
+    page: 1,
+  }
+  pages: number[] = []
   constructor(private expenseService: ExpenseService) { }
 
   ngOnInit(): void {
+    this.initializeMonthYear()
     this.loadExpenses()
   }
-
+  initializeMonthYear() {
+    const date = new Date();
+    const year = date.getFullYear();
+    let month = (date.getMonth() + 1).toString().padStart(2, '0');
+    this.filters.monthYear = `${year}-${month}`;
+  }
   loadExpenses(): void {
-    this.expenseService.getAllExpenses().subscribe(
+    this.expenseService.getAllExpenses(this.filters).subscribe(
       (res: any) => {
         this.expenses = res.data.expenses
+        this.filters.page = res.data.page
+        this.pages = Array.from({ length: res.data.totalPages }, (_, i) => i + 1)
       },
       (error) => {
         console.error("Error loading expenses", error)
       },
     )
   }
-
+  applyFilters() {
+    this.loadExpenses()
+  }
+  onpageChange(e: any) {
+    this.filters.page = e
+    this.loadExpenses()
+  }
   openAddExpenseModal(): void {
     this.showAddExpenseModal = true
   }

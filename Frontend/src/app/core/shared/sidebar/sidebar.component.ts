@@ -1,17 +1,18 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, HostListener, inject, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, HostListener, inject, Output, ViewChild } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../service/Auth/auth.service';
 import { ExportService } from '../../service/Export/export.service';
+import { ToastService } from '../../service/Toast/toast.service';
 
 @Component({
   selector: 'app-sidebar',
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.css'
 })
 export class SidebarComponent {
-
+  @Output() closeSideBar = new EventEmitter<void>()
   showAccountMenu: boolean = false
   showExportMenu: boolean = false
   authService = inject(AuthService)
@@ -25,7 +26,9 @@ export class SidebarComponent {
     { icon: "fa-solid fa-download", label: "Export", route: "/export" },
   ]
 
-  constructor(private router: Router) { }
+  constructor(private router: Router,
+    private toastService: ToastService
+  ) { }
 
   isActive(route: string): boolean {
     return this.router.url === route
@@ -55,6 +58,10 @@ export class SidebarComponent {
       this.navigate(item.route);
     }
   }
+  onClickSettings(event: MouseEvent) {
+    event.stopPropagation();
+    this.toggleAccountMenu()
+  }
   onExportExpenseToExcel() {
     this.exportService.exportExpenseToExcel().subscribe((excelBlob: any) => {
       const blobUrl = URL.createObjectURL(excelBlob);
@@ -63,6 +70,9 @@ export class SidebarComponent {
       link.download = `expense.xlsx`;
       link.click();
       URL.revokeObjectURL(blobUrl);
+      this.toastService.showAlert('success', 'Success', 'Expense data is downloaded')
+    }, error => {
+      this.toastService.showAlert('error', 'Error', error.error.message)
     })
   }
   onExportInvoiceToExcel() {
@@ -74,13 +84,23 @@ export class SidebarComponent {
         link.download = `invoice.xlsx`;
         link.click();
         URL.revokeObjectURL(blobUrl);
+        this.toastService.showAlert('success', 'Success', 'Invoice data is downloaded')
+      }, error => {
+        this.toastService.showAlert('error', 'Error', error.error.message)
       }
     )
+  }
+
+  onClose() {
+    this.closeSideBar.emit()
   }
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent): void {
     if (this.showExportMenu) {
       this.showExportMenu = false;
+    }
+    if (this.showAccountMenu) {
+      this.showAccountMenu = false
     }
   }
 }

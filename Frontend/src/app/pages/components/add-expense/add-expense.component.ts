@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, inject, Output } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ExpenseService } from '../../../core/service/expense/expense.service';
+import { ToastService } from '../../../core/service/Toast/toast.service';
 
 @Component({
   selector: 'app-add-expense',
@@ -16,7 +17,7 @@ export class AddExpenseComponent {
   expenseForm: FormGroup | any
   loading = false
   expenseService = inject(ExpenseService)
-
+  toastService = inject(ToastService)
   constructor(private formBuilder: FormBuilder) { }
 
   ngOnInit(): void {
@@ -46,10 +47,11 @@ export class AddExpenseComponent {
       date: new Date(this.expenseForm.value.date),
     }
     this.expenseService.addExpense(expense).subscribe(res => {
-      alert('New Expense is added.')
+      this.toastService.showAlert('success', 'Success', 'New Expense is added')
       this.save.emit()
       this.loading = false
-
+    }, error => {
+      this.toastService.showAlert('error', 'Error', error.error.message)
     })
   }
 }

@@ -27,7 +27,7 @@ export class AddBudgetComponent {
 
   years: number[] = [];
   budgetService = inject(BudgetService)
-  toastServie = inject(ToastService)
+  toastService = inject(ToastService)
   constructor(private fb: FormBuilder) {
     const currentYear = new Date().getFullYear();
     for (let i = currentYear - 10; i <= currentYear + 10; i++) {
@@ -70,15 +70,15 @@ export class AddBudgetComponent {
 
     this.loading = true;
     this.budgetService.addBudget(this.budgetForm.value).subscribe(res => {
-      this.toastServie.showAlert('success', "Created", "New Budget is created")
+      this.toastService.showAlert('success', "Created", "New Budget is created")
     }, error => {
-      alert(error.error.message)
+      this.toastService.showAlert('error', "Error", error.error.message)
     })
   }
   updateBudget() {
     this.budgetService.updateBudget(this.budget._id, this.budgetForm.value).subscribe(res => {
       this.save.emit()
-      this.toastServie.showAlert('success', "Updated", "Budget is successfully updated")
+      this.toastService.showAlert('success', "Updated", "Budget is successfully updated")
     })
   }
 }

@@ -3,6 +3,7 @@ import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/service/Auth/auth.service';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { ToastService } from '../../../core/service/Toast/toast.service';
 @Component({
   selector: 'app-login',
   imports: [FormsModule, CommonModule, ReactiveFormsModule, RouterLink],
@@ -12,6 +13,7 @@ import { CommonModule } from '@angular/common';
 export class LoginComponent {
   authService = inject(AuthService)
   router = inject(Router)
+  toastService = inject(ToastService)
   loginForm: FormGroup;
 
   constructor(
@@ -26,12 +28,14 @@ export class LoginComponent {
   onSubmit() {
     this.authService.login(this.loginForm.value).subscribe((res: any) => {
       if (res.status === 'success') {
+        this.toastService.showAlert('success', "Login Successful", '')
         localStorage.setItem('token', res.data.token)
         this.router.navigateByUrl('/dashboard')
       }
     }, (err) => {
       console.log(err)
-      alert(err.error.message)
+      this.toastService.showAlert('error', "Error", err.error.message)
+      // alert(err.error.message)
     })
   }
 }

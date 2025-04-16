@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, inject, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { InvoiceService } from '../../../core/service/invoice/invoice.service';
+import { ToastService } from '../../../core/service/Toast/toast.service';
 interface InvoiceItem {
   itemName: string
   quantity: number
@@ -36,6 +37,7 @@ export class AddInvoiceComponent {
   error = ''
   constructor(private fb: FormBuilder) { }
   invoiceService = inject(InvoiceService)
+  toastService = inject(ToastService)
   ngOnInit(): void {
     this.initForm()
     this.calculateTotals()
@@ -145,9 +147,12 @@ export class AddInvoiceComponent {
   onSubmit(): void {
     if (this.invoiceForm.valid) {
       this.invoiceService.createInvoice(this.invoiceForm.value).subscribe(res => {
-        alert('Invoice Created Successfully.');
+        this.toastService.showAlert('success', 'Success', "New Invoice is create")
+
         this.invoiceForm.reset()
         this.currentStep = 1;
+      }, error => {
+        this.toastService.showAlert('error', 'Error', error.error.message)
       })
     }
     // else {

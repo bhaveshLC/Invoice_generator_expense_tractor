@@ -9,8 +9,11 @@ export class HttpService {
 
   constructor() { }
   http = inject(HttpClient)
-  get(endPoint: string, optional?: any) {
-    return this.http.get(apiUrl + endPoint, optional)
+  get(endPoint: string, params?: any) {
+    return this.http.get(apiUrl + endPoint, { params });
+  }
+  getWithOptional(endPoint: string, optional: any) {
+    return this.http.get(apiUrl + endPoint, optional);
   }
   post(endPoint: string, body: any) {
     return this.http.post(apiUrl + endPoint, body)

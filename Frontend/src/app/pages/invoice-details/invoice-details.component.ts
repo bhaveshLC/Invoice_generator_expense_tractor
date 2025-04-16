@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { InvoiceService } from '../../core/service/invoice/invoice.service';
 import { CommonModule } from '@angular/common';
 import { ConfirmationDialogComponent } from "../../core/shared/confirmation-dialog/confirmation-dialog.component";
+import { ToastService } from '../../core/service/Toast/toast.service';
 
 @Component({
   selector: 'app-invoice-details',
@@ -16,10 +17,12 @@ export class InvoiceDetailsComponent implements OnInit {
   error = ""
   showDeleteConfirmation = false
   showPaymentConfirmation = false
+  showEmailConfirmation = false
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private invoiceService: InvoiceService
+    private invoiceService: InvoiceService,
+    private toastService: ToastService
   ) { }
 
   ngOnInit(): void {
@@ -76,7 +79,7 @@ export class InvoiceDetailsComponent implements OnInit {
         link.download = `invoice-${this.invoice._id}.pdf`;
         link.click();
         URL.revokeObjectURL(blobUrl);
-        alert('PDF downloaded');
+        this.toastService.showAlert('success', "Success", 'Invoice PDF downloaded')
       },
       (error) => {
         console.error('PDF download failed:', error);
@@ -97,6 +100,20 @@ export class InvoiceDetailsComponent implements OnInit {
   }
   markAsPaid() {
     this.showPaymentConfirmation = true
+  }
+  confirmSendEmail() {
+    this.showEmailConfirmation = true
+  }
+  cancelEmailProcess() {
+    this.showEmailConfirmation = false
+  }
+  sendMail() {
+    this.showEmailConfirmation = false
+    this.invoiceService.sendInvoicePDFMail(this.invoice._id).subscribe(res => {
+      this.toastService.showAlert('success', 'PDF Sent on Email', "Check your mail box.")
+    }, error => {
+      this.toastService.showAlert('error', 'Error', error.error.messge)
+    })
   }
 }
 

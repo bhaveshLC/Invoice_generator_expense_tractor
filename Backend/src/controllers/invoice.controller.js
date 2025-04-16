@@ -20,12 +20,10 @@ const createInvoice = async (req, res) => {
 };
 
 const getInvoices = async (req, res) => {
-  const invoices = await invoiceService.getInvoices(req.userId);
+  const invoices = await invoiceService.getInvoices(req.userId, req.query);
   res.status(200).json({
     status: "success",
-    data: {
-      invoices,
-    },
+    data: invoices,
   });
 };
 const getInvoiceById = async (req, res) => {

@@ -57,9 +57,52 @@ async function createExpense(userId, expenseData) {
   return expense;
 }
 
-async function getExpenses(userId) {
-  const expenses = await Expense.find({ user: userId }).sort({ date: -1 });
-  return expenses;
+async function getExpenses(userId, params) {
+  const query = { user: userId };
+  const limit = 10;
+
+  // Safe defaults
+  let category,
+    minPrice,
+    monthYear,
+    page = 1;
+
+  // Parse filter only if it exists
+  if (params?.filter) {
+    try {
+      const filter = JSON.parse(params.filter);
+      ({ category, minPrice, monthYear, page = 1 } = filter);
+    } catch (err) {
+      console.error("Failed to parse filter:", err);
+    }
+  }
+
+  // Ensure page is a number
+  page = Number(page);
+
+  // Build query
+  if (category) query.category = category;
+  if (minPrice) query.amount = { $gte: Number(minPrice) };
+  if (monthYear) {
+    const [year, month] = monthYear.split("-").map(Number);
+    const startDate = new Date(year, month - 1, 1);
+    const endDate = new Date(year, month, 1);
+    query.date = { $gte: startDate, $lt: endDate };
+  }
+
+  const totalCount = await Expense.countDocuments(query);
+  const expenses = await Expense.find(query)
+    .skip((page - 1) * limit)
+    .limit(limit)
+    .sort({ date: -1 });
+
+  return {
+    page,
+    limit,
+    totalCount,
+    totalPages: Math.ceil(totalCount / limit),
+    expenses,
+  };
 }
 
 async function getExpenseById(expenseId, userId) {

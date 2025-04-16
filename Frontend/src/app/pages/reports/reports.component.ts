@@ -30,7 +30,7 @@ export class ReportsComponent {
       this.expenses = res.data.expenses
 
       this.invoiceService.getInvoices().subscribe((res: any) => {
-        this.invoices = res.data.invoices
+        this.invoices = res.data
         this.renderCharts()
       })
     })

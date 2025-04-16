@@ -2,6 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { HttpService } from '../http/http.service';
 import { forkJoin, map } from 'rxjs';
 import { ExpenseService } from '../expense/expense.service';
+import { HttpParams } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -11,11 +12,19 @@ export class BudgetService {
   constructor() { }
   httpService = inject(HttpService)
   expenseService = inject(ExpenseService)
-  getBudgets() {
-    return this.httpService.get('budget')
+  getBudgets(params: any) {
+    const [year, month] = params.split('-');
+    let paramSet = new HttpParams()
+      .set('month', month.toString())
+      .set('year', year.toString());
+    return this.httpService.get('budget', paramSet)
   }
-  getBudgetSummary() {
-    return this.httpService.get('budget/summary')
+  getBudgetSummary(params: any) {
+    const [year, month] = params.split('-');
+    let paramSet = new HttpParams()
+      .set('month', month.toString())
+      .set('year', year.toString());
+    return this.httpService.get('budget/summary', paramSet)
   }
   addBudget(data: any) {
     return this.httpService.post('budget', data)

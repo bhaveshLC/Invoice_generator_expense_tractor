@@ -2,11 +2,28 @@
   class="fixed top-0 left-0 bg-[#2a3158] text-white w-64 min-h-screen flex flex-col justify-between z-50"
 >
   <div>
-    <div class="p-4">
-      <h4 class="text-xl font-bold">Invoice Generator &</h4>
-      <h4 class="text-xl font-bold">Expense Tracter</h4>
+    <div class="flex justify-between">
+      <div class="text-shadow-lg text-center font-bold p-4">
+        <h4>Invoice Generator &</h4>
+        <h4>Expense Tracter</h4>
+      </div>
+      <button (click)="onClose()" class="cursor-pointer self-start md:hidden">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          class="size-6 m-2"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M6 18 18 6M6 6l12 12"
+          />
+        </svg>
+      </button>
     </div>
-
     <nav class="mt-8">
       <ul>
         <li
@@ -50,20 +67,13 @@
   </div>
 
   <div class="p-4 mt-auto">
-    <div
-      class="px-4 py-3 flex items-center cursor-pointer hover:bg-[#3a4169] transition-colors"
-    >
-      <i class="mr-3 fa-solid fa-gear"></i>
-      <span>Options</span>
-    </div>
-
     <div class="relative">
       <div
         class="px-4 py-3 flex items-center cursor-pointer hover:bg-[#3a4169] transition-colors"
-        (click)="toggleAccountMenu()"
+        (click)="onClickSettings($event)"
       >
-        <i class="mr-3 fa-solid fa-user"></i>
-        <span>Account</span>
+        <i class="mr-3 fa-solid fa-gear"></i>
+        <span>Settings</span>
         <i
           class="ml-auto fa-solid"
           [ngClass]="{
@@ -77,6 +87,13 @@
         *ngIf="showAccountMenu"
         class="absolute bottom-full left-0 right-0 mb-1 bg-[#3a4169] rounded-md shadow-lg z-10 overflow-hidden"
       >
+        <div
+          class="px-4 py-3 hover:bg-[#4a527a] cursor-pointer transition-colors"
+          routerLink="/profile"
+        >
+          <i class="mr-3 fa-solid fa-user"></i>
+          <span>Account</span>
+        </div>
         <div
           class="px-4 py-3 hover:bg-[#4a527a] cursor-pointer transition-colors"
           (click)="logout()"

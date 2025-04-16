@@ -9,12 +9,10 @@ const addExpense = async (req, res) => {
   });
 };
 const getExpenses = async (req, res) => {
-  const expenses = await expenseService.getExpenses(req.userId);
+  const expenses = await expenseService.getExpenses(req.userId, req.query);
   res.status(200).json({
     status: "success",
-    data: {
-      expenses,
-    },
+    data: expenses,
   });
 };
 const getExpenseById = async (req, res) => {

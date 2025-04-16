@@ -22,8 +22,14 @@ async function createBudget(userId, BudgetData) {
   });
   return budget;
 }
-async function getBudgets(userId) {
-  const budgets = await Budget.find({ user: userId });
+async function getBudgets(userId, queryData) {
+  const month = queryData.month || "4";
+  const year = queryData.year || "2025";
+  const budgets = await Budget.find({
+    user: userId,
+    month: month,
+    year,
+  });
   return budgets;
 }
 async function getBudgetByCategory(paramsData) {
@@ -62,43 +68,52 @@ async function deleteBudget(budgetId, userId) {
   return;
 }
 async function getBudgetSummary(userId, queryData) {
+  const month = queryData.month;
+  const year = queryData.year;
+
   const budgets = await Budget.find({
     user: userId,
+    month,
+    year,
   });
-
-  const expenses = await Expense.aggregate([
-    {
-      $match: {
-        user: new mongoose.Types.ObjectId(userId),
+  const monthInt = parseInt(month) - 1;
+  const start = new Date(year, monthInt, 1);
+  const end = new Date(year, monthInt + 1, 1);
+  if (budgets.length != 0) {
+    const expenses = await Expense.aggregate([
+      {
+        $match: {
+          user: new mongoose.Types.ObjectId(userId),
+          date: { $gte: start, $lt: end },
+        },
       },
-    },
-    {
-      $group: {
-        _id: "$category",
-        spentAmount: { $sum: "$amount" },
+      {
+        $group: {
+          _id: "$category",
+          spentAmount: { $sum: "$amount" },
+        },
       },
-    },
-  ]);
-  console.log(expenses);
-  const spentMap = {};
-  expenses.forEach((e) => {
-    spentMap[e._id] = e.spentAmount;
-  });
-  console.log(spentMap);
-  const summary = budgets.map((b) => {
-    const spent = spentMap[b.category] || 0;
-    const percentage = Math.min(((spent / b.amount) * 100).toFixed(2), 100);
+    ]);
+    const spentMap = {};
+    expenses.forEach((e) => {
+      spentMap[e._id] = e.spentAmount;
+    });
+    console.log(spentMap);
+    const summary = budgets.map((b) => {
+      const spent = spentMap[b.category] || 0;
+      const percentage = Math.min(((spent / b.amount) * 100).toFixed(2), 100);
 
-    return {
-      category: b.category,
-      budgetAmount: b.amount,
-      spentAmount: spent,
-      remainingAmount: b.amount - spent,
-      percentageSpent: Number(percentage),
-    };
-  });
-
-  return summary;
+      return {
+        category: b.category,
+        budgetAmount: b.amount,
+        spentAmount: spent,
+        remainingAmount: b.amount - spent,
+        percentageSpent: Number(percentage),
+      };
+    });
+    return summary;
+  }
+  return [];
 }
 module.exports = {
   createBudget,

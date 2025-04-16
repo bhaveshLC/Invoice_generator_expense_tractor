@@ -6,10 +6,11 @@ import { AddInvoiceComponent } from "../components/add-invoice/add-invoice.compo
 import { ConfirmationDialogComponent } from "../../core/shared/confirmation-dialog/confirmation-dialog.component";
 import { EditInvoiceComponent } from "../components/edit-invoice/edit-invoice.component";
 import { Router, RouterLink } from '@angular/router';
+import { PaginationComponent } from "../../core/shared/pagination/pagination.component";
 
 @Component({
   selector: 'app-invoice-list',
-  imports: [CommonModule, DatePipe, RouterLink, ConfirmationDialogComponent, EditInvoiceComponent],
+  imports: [CommonModule, DatePipe, RouterLink, ConfirmationDialogComponent, EditInvoiceComponent, PaginationComponent],
   templateUrl: './invoice-list.component.html',
   styleUrl: './invoice-list.component.css'
 })
@@ -20,6 +21,8 @@ export class InvoiceListComponent {
   showDeleteConfirmation = false
   currentInvoice: any;
   router = inject(Router)
+  currentPage = 1;
+  pages: number[] = []
   constructor(private invoiceService: InvoiceService) { }
 
   ngOnInit(): void {
@@ -27,11 +30,13 @@ export class InvoiceListComponent {
   }
 
   loadInvoices(): void {
-    this.invoiceService.getInvoices()
+    this.invoiceService.getInvoices(this.currentPage)
       .subscribe(
         (res: any) => {
           console.log(res)
           this.invoices = res.data.invoices;
+          this.currentPage = res.data.page
+          this.pages = Array.from({ length: res.data.totalPages }, (_, i) => i + 1)
         },
         error => {
           console.error('Error loading invoices', error);
@@ -57,6 +62,11 @@ export class InvoiceListComponent {
           console.error('Error creating invoice', error);
         }
       );
+  }
+  onpageChange(e: any) {
+    console.log("e", e)
+    this.currentPage = e
+    this.loadInvoices()
   }
   payInvoice(invoice: any): void {
     this.invoiceService.updateInvoice(invoice.id, { status: "Paid" }).subscribe(

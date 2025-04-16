@@ -13,7 +13,7 @@ const createBudget = async (req, res) => {
 };
 const getBudgets = async (req, res) => {
   const userId = req.userId;
-  const budgets = await budgetService.getBudgets(userId);
+  const budgets = await budgetService.getBudgets(userId, req.query);
   res.status(200).json({
     status: "success",
     data: {
