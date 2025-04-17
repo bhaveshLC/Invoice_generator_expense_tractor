@@ -45,11 +45,9 @@
           <p class="text-blue-100 mt-1">User ID: {{ user._id }}</p>
         </div>
       </div>
-
       <form [formGroup]="userForm">
         <div class="p-6">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <!-- Personal Information -->
             <div class="bg-gray-50 p-4 rounded-lg">
               <h2
                 class="text-lg font-semibold text-gray-800 border-b pb-2 mb-4"
@@ -65,7 +63,6 @@
                   <p class="text-sm text-gray-500">Email Address</p>
                   <p class="font-medium">{{ user.email }}</p>
                 </div>
-                <!-- Edit Mode Fields -->
                 <div *ngIf="isEdit" class="space-y-4">
                   <div>
                     <label class="block text-sm text-gray-500 mb-1"
@@ -109,7 +106,6 @@
               </div>
             </div>
 
-            <!-- Address Information -->
             <div class="bg-gray-50 p-4 rounded-lg">
               <h2
                 class="text-lg font-semibold text-gray-800 border-b pb-2 mb-4"
@@ -139,7 +135,6 @@
                 </div>
               </div>
 
-              <!-- Edit Mode Address Fields -->
               <form *ngIf="isEdit" formGroupName="address" class="space-y-4">
                 <div>
                   <label class="block text-sm text-gray-500 mb-1">Street</label>

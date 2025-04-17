@@ -6,10 +6,11 @@ import { ConfirmationDialogComponent } from "../../core/shared/confirmation-dial
 import { category } from '../../Evironment';
 import { FormsModule } from '@angular/forms';
 import { PaginationComponent } from "../../core/shared/pagination/pagination.component";
+import { EditExpenseComponent } from "../components/edit-expense/edit-expense.component";
 
 @Component({
   selector: 'app-expense',
-  imports: [FormsModule, CommonModule, AddExpenseComponent, DatePipe, ConfirmationDialogComponent, PaginationComponent],
+  imports: [FormsModule, CommonModule, AddExpenseComponent, DatePipe, ConfirmationDialogComponent, PaginationComponent, EditExpenseComponent],
   templateUrl: './expense.component.html',
   styleUrl: './expense.component.css'
 })
@@ -17,6 +18,7 @@ export class ExpenseComponent {
   expenses: any[] = []
   showAddExpenseModal = false
   showDeleteConfirmation = false
+  showEditExpenseModal = false
   currentExpense: any
   categories = category;
   filters = {
@@ -60,7 +62,13 @@ export class ExpenseComponent {
   openAddExpenseModal(): void {
     this.showAddExpenseModal = true
   }
-
+  onEditExpense(expense: any) {
+    this.showEditExpenseModal = true
+    this.currentExpense = expense
+  }
+  closeEditExpenseModal() {
+    this.showEditExpenseModal = false
+  }
   closeAddExpenseModal(): void {
     this.showAddExpenseModal = false
   }

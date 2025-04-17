@@ -5,7 +5,7 @@
       <div class="flex items-center">
         <button
           (click)="openAddExpenseModal()"
-          class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md flex items-center"
+          class="bg-blue-500 hover:bg-blue-600 text-white text-sm font-semibold cursor-pointer px-4 py-2 rounded-md flex items-center"
         >
           <svg
             class="w-5 h-5 mr-2"
@@ -25,9 +25,9 @@
         </button>
       </div>
     </div>
-    <div class="flex flex-wrap gap-4 items-center mb-6">
+    <div class="flex flex-wrap gap-4 text-sm items-center mb-6">
       <div class="mr-4">
-        <label for="category" class="text-sm text-gray-700">Category</label>
+        <label for="category" class="text-gray-700">Category</label>
         <select
           id="category"
           [(ngModel)]="filters.category"
@@ -61,7 +61,7 @@
         />
       </div>
       <button
-        class="bg-blue-500 p-2 rounded shadow cursor-pointer text-white self-end"
+        class="bg-blue-500 p-2 rounded shadow cursor-pointer text-white self-end font-semibold hover:bg-blue-600"
         (click)="applyFilters()"
       >
         Apply Filter
@@ -118,7 +118,10 @@
               </div>
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-              <button class="text-indigo-600 hover:text-indigo-900 mr-3">
+              <button
+                class="text-indigo-600 hover:text-indigo-900 mr-3"
+                (click)="onEditExpense(expense)"
+              >
                 Edit
               </button>
               <button
@@ -151,7 +154,11 @@
   (confirm)="deleteExpense()"
   (cancel)="cancelDeleteExpense()"
 ></app-confirmation-dialog>
-
+<app-edit-expense
+  *ngIf="showEditExpenseModal"
+  (close)="closeEditExpenseModal()"
+  [expense]="currentExpense"
+/>
 <app-add-expense
   *ngIf="showAddExpenseModal"
   (close)="closeAddExpenseModal()"

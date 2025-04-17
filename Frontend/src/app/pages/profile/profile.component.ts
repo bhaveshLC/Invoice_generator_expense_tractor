@@ -2,6 +2,7 @@ import { Component, OnInit, inject } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { UserService } from '../../core/service/user/user.service';
+import { ToastService } from '../../core/service/Toast/toast.service';
 
 interface Address {
   street: string;
@@ -35,7 +36,7 @@ export class ProfileComponent implements OnInit {
   isLoading: boolean = false
   userForm: FormGroup;
   userService = inject(UserService);
-
+  toastService = inject(ToastService)
   constructor(private fb: FormBuilder) {
     this.userForm = this.fb.group({
       name: ['', [Validators.required]],
@@ -82,9 +83,11 @@ export class ProfileComponent implements OnInit {
         next: (res: any) => {
           this.user = res.data.user;
           this.isEdit = false;
+          this.toastService.showAlert('success', 'Success', 'Profile updated successfully.')
         },
         error: (err) => {
           console.error('Error updating user:', err);
+          this.toastService.showAlert('error', 'Error', err.error.message)
         }
       });
     } else {

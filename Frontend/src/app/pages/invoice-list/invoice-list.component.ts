@@ -1,16 +1,13 @@
 import { Component, inject } from '@angular/core';
-import { SidebarComponent } from "../../core/shared/sidebar/sidebar.component";
 import { InvoiceService } from '../../core/service/invoice/invoice.service';
 import { CommonModule, DatePipe } from '@angular/common';
-import { AddInvoiceComponent } from "../components/add-invoice/add-invoice.component";
 import { ConfirmationDialogComponent } from "../../core/shared/confirmation-dialog/confirmation-dialog.component";
-import { EditInvoiceComponent } from "../components/edit-invoice/edit-invoice.component";
 import { Router, RouterLink } from '@angular/router';
 import { PaginationComponent } from "../../core/shared/pagination/pagination.component";
 
 @Component({
   selector: 'app-invoice-list',
-  imports: [CommonModule, DatePipe, RouterLink, ConfirmationDialogComponent, EditInvoiceComponent, PaginationComponent],
+  imports: [CommonModule, DatePipe, RouterLink, ConfirmationDialogComponent, PaginationComponent],
   templateUrl: './invoice-list.component.html',
   styleUrl: './invoice-list.component.css'
 })

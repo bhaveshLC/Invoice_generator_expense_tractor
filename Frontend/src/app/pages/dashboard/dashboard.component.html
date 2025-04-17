@@ -47,11 +47,21 @@
             <span class="text-xl font-bold">{{ invoiceCount }}</span>
           </div>
 
-          <div class="border-t border-gray-200 pt-4">
-            <span class="text-sm text-gray-500">Total Amount</span>
-            <div class="text-xl font-bold">
-              {{ invoiceTotal | currency : "INR" }}
+          <div
+            class="border-t border-gray-200 pt-4 flex justify-between items-start"
+          >
+            <div>
+              <span class="text-sm text-gray-500">Total Amount</span>
+              <div class="text-xl font-bold">
+                {{ invoiceTotal | currency : "INR" }}
+              </div>
             </div>
+            <button
+              routerLink="/invoices"
+              class="text-blue-600 px-4 py-2 hover:text-blue-800 cursor-pointer"
+            >
+              View All
+            </button>
           </div>
 
           <div class="mt-4 grid grid-cols-2 gap-4">
@@ -75,12 +85,6 @@
               class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 cursor-pointer"
             >
               Create Invoice
-            </button>
-            <button
-              routerLink="/invoices"
-              class="text-blue-600 px-4 py-2 hover:text-blue-800 cursor-pointer"
-            >
-              View All
             </button>
           </div>
         </div>

@@ -1,63 +1,76 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { InvoiceFormComponent } from "../invoice-form/invoice-form.component";
+import { ActivatedRoute, Router } from '@angular/router';
+import { InvoiceService } from '../../../core/service/invoice/invoice.service';
+import { ToastService } from '../../../core/service/Toast/toast.service';
 
 @Component({
   selector: 'app-edit-invoice',
-  imports: [FormsModule, ReactiveFormsModule, CommonModule],
+  imports: [FormsModule, ReactiveFormsModule, CommonModule, InvoiceFormComponent],
   templateUrl: './edit-invoice.component.html',
   styleUrl: './edit-invoice.component.css'
 })
 export class EditInvoiceComponent {
-  @Input() invoice: any
-  @Output() close = new EventEmitter<void>()
-  @Output() save = new EventEmitter<any>()
+  invoice: any
+  loading = true
+  error = ""
 
-  invoiceForm: FormGroup | any
-  loading = false
-
-  constructor(private formBuilder: FormBuilder) { }
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private invoiceService: InvoiceService,
+    private toastService: ToastService
+  ) { }
 
   ngOnInit(): void {
-    this.initForm()
+    this.loadInvoice()
   }
 
-
-  initForm(): void {
-    console.log(this.invoice)
-    this.invoiceForm = this.formBuilder.group({
-      clientName: [this.invoice?.clientName || "", Validators.required],
-      total: [this.invoice?.total || "", [Validators.required, Validators.min(0)]],
-      category: [this.invoice?.category || "", Validators.required],
-      notes: [this.invoice?.notes || ""],
-    })
-  }
-
-  onClose(): void {
-    this.close.emit()
-  }
-
-  onSubmit(): void {
-    if (this.invoiceForm.invalid) {
+  loadInvoice(): void {
+    const id = this.route.snapshot.paramMap.get("id")
+    if (!id) {
+      this.error = "Invoice ID not found"
+      this.loading = false
       return
     }
 
+    this.invoiceService.getInvoice(id).subscribe(
+      (res: any) => {
+        this.invoice = res.data.invoice
+        this.loading = false
+      },
+      (error: any) => {
+        this.error = "Failed to load invoice. Please try again."
+        this.loading = false
+        console.error("Error loading invoice", error)
+      },
+    )
+  }
+
+  saveInvoice(updatedInvoice: any): void {
+    if (!this.invoice) return
+
     this.loading = true
+    console.log(updatedInvoice)
+    this.invoiceService.updateInvoice(this.invoice._id, updatedInvoice).subscribe(
+      (result: any) => {
+        this.invoice = result.data.invoice
+        this.loading = false
+        this.router.navigate(["/invoices"])
+        this.toastService.showAlert('success', 'success', 'Invoice updated')
+      },
+      (error: any) => {
+        this.loading = false
+        this.error = "Failed to update invoice. Please try again."
+        console.error("Error updating invoice", error)
+        this.toastService.showAlert('error', 'Error', error.error.message)
+      },
+    )
+  }
 
-    const invoiceData: Partial<any> = {
-      clientName: this.invoiceForm.value.clientName,
-      clientEmail: this.invoice?.clientEmail,
-      clientAddress: this.invoice?.clientAddress,
-      amount: this.invoiceForm.value.amount,
-      category: this.invoiceForm.value.category,
-      notes: this.invoiceForm.value.notes,
-      date: this.invoice?.date || new Date(),
-      status: this.invoice?.status || "Unpaid",
-    }
-
-    setTimeout(() => {
-      this.save.emit(invoiceData as any)
-      this.loading = false
-    }, 500)
+  goBack(): void {
+    this.router.navigate(["/invoices"])
   }
 }

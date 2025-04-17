@@ -122,6 +122,7 @@ async function getInvoiceById(invoiceId, userId) {
 }
 
 async function updateInvoice(invoiceId, userId, updatedData) {
+  console.log(updatedData);
   const invoice = await Invoice.findOneAndUpdate(
     { _id: invoiceId, user: userId },
     updatedData,

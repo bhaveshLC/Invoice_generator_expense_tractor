@@ -10,15 +10,19 @@ import { InvoiceDetailsComponent } from './pages/invoice-details/invoice-details
 import { LayoutComponent } from './pages/layout/layout.component';
 import { BudgetListComponent } from './pages/budget-list/budget-list.component';
 import { ProfileComponent } from './pages/profile/profile.component';
+import { authGuard } from './core/guard/auth.guard';
+import { userGuard } from './core/guard/user.guard';
+import { EditInvoiceComponent } from './pages/components/edit-invoice/edit-invoice.component';
 
 export const routes: Routes = [
     { path: '', redirectTo: '/login', pathMatch: 'full' },
-    { path: 'login', component: LoginComponent },
-    { path: 'register', component: RegisterComponent },
+    { path: 'login', component: LoginComponent, canActivate: [authGuard] },
+    { path: 'register', component: RegisterComponent, canActivate: [authGuard] },
 
     {
         path: '',
         component: LayoutComponent,
+        canActivate: [userGuard],
         children: [
             { path: 'dashboard', component: DashboardComponent },
             { path: 'invoices', component: InvoiceListComponent },
@@ -27,7 +31,8 @@ export const routes: Routes = [
             { path: 'budgets', component: BudgetListComponent },
             { path: 'reports', component: ReportsComponent },
             { path: 'create-invoice', component: AddInvoiceComponent },
-            { path: 'profile', component: ProfileComponent }
+            { path: 'profile', component: ProfileComponent },
+            { path: "invoices/:id/edit-details", component: EditInvoiceComponent },
         ]
     },
 
