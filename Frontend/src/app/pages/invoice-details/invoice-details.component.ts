@@ -4,6 +4,7 @@ import { InvoiceService } from '../../core/service/invoice/invoice.service';
 import { CommonModule } from '@angular/common';
 import { ConfirmationDialogComponent } from "../../core/shared/confirmation-dialog/confirmation-dialog.component";
 import { ToastService } from '../../core/service/Toast/toast.service';
+import { UserService } from '../../core/service/user/user.service';
 
 @Component({
   selector: 'app-invoice-details',
@@ -13,7 +14,10 @@ import { ToastService } from '../../core/service/Toast/toast.service';
 })
 export class InvoiceDetailsComponent implements OnInit {
   invoice: any
+  user: any
   loading = false
+  isLoading: boolean = false
+  pdfLoading = false
   error = ""
   showDeleteConfirmation = false
   showPaymentConfirmation = false
@@ -22,13 +26,16 @@ export class InvoiceDetailsComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private invoiceService: InvoiceService,
+    private userService: UserService,
     private toastService: ToastService
   ) { }
 
   ngOnInit(): void {
     this.loading = true
     const id = this.route.snapshot.paramMap.get("id")
-
+    this.userService.getSelf().subscribe((res: any) => {
+      this.user = res.data.user
+    })
     if (id) {
       this.invoiceService.getInvoice(id).subscribe(
         (res: any) => {
@@ -71,6 +78,7 @@ export class InvoiceDetailsComponent implements OnInit {
   }
 
   printInvoice() {
+    this.pdfLoading = true
     this.invoiceService.getInvoicePDF(this.invoice._id).subscribe(
       (pdfBlob: any) => {
         const blobUrl = URL.createObjectURL(pdfBlob);
@@ -83,6 +91,8 @@ export class InvoiceDetailsComponent implements OnInit {
       },
       (error) => {
         console.error('PDF download failed:', error);
+      }, () => {
+        this.pdfLoading = false
       }
     );
   }
@@ -108,11 +118,14 @@ export class InvoiceDetailsComponent implements OnInit {
     this.showEmailConfirmation = false
   }
   sendMail() {
+    this.isLoading = true
     this.showEmailConfirmation = false
     this.invoiceService.sendInvoicePDFMail(this.invoice._id).subscribe(res => {
       this.toastService.showAlert('success', 'PDF Sent on Email', "Check your mail box.")
     }, error => {
       this.toastService.showAlert('error', 'Error', error.error.messge)
+    }, () => {
+      this.isLoading = false
     })
   }
 }

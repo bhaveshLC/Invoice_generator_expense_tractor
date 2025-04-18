@@ -1,5 +1,6 @@
 const Expense = require("../models/expense.model");
 const Invoice = require("../models/invoice.model");
+const User = require("../models/user.model");
 const sendEmail = require("../utils/emailHandler");
 const { AppError } = require("../utils/errorHandler");
 const PDFService = require("./pdf.service");
@@ -89,7 +90,9 @@ async function createInvoice(userId, invoiceData) {
 
 async function getInvoices(userId, query) {
   if (!query.page) {
-    const invoices = await Invoice.find().sort({ createdAt: -1 });
+    const invoices = await Invoice.find({ user: userId }).sort({
+      createdAt: -1,
+    });
     return invoices;
   }
   const page = Number(query.page);
@@ -162,7 +165,8 @@ async function sendInvoice(invoiceId, userId) {
   if (!invoice) {
     throw new AppError(404, "Invoice not found");
   }
-  const pdfBuffer = await PDFService.generateInvoicePDF(invoice);
+  const user = await User.findById(userId);
+  const pdfBuffer = await PDFService.generateInvoicePDF(invoice, user);
   if (!pdfBuffer) {
     throw new AppError(400, "PDF is not generated...");
   }

@@ -50,9 +50,12 @@
     </div>
 
     <div class="company-info">
-      <h2>From: Your Company</h2>
-      <p>123 Business Street</p>
-      <p>City, State 12345</p>
+      <h2>From: <%= user?.name %></h2>
+      <p><%= user?.address?.street %></p>
+      <p>
+        <%= user?.address?.city %>, <%= user?.address?.state %><%=
+        user?.address?.zip %>
+      </p>
     </div>
 
     <div class="client-info">

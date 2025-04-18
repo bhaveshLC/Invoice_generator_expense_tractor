@@ -7,11 +7,15 @@
       >
         <div class="relative w-24 h-24 sm:w-32 sm:h-32 mb-4 sm:mb-0">
           <img
-            [src]="user.profileLogo"
+            [src]="
+              user?.profileLogo
+                ? user?.profileLogo
+                : 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png'
+            "
             alt="Profile Logo"
             class="w-full h-full rounded-full object-cover border-4 border-white shadow-md"
           />
-          <button
+          <!-- <button
             class="absolute bottom-0 right-0 bg-gray-900 rounded-full p-1.5 border-2 border-white cursor-pointer"
             (click)="changeProfilePicture()"
           >
@@ -29,7 +33,7 @@
                 d="M12 4.5v15m7.5-7.5h-15"
               />
             </svg>
-          </button>
+          </button> -->
           <input
             type="file"
             name=""
@@ -112,29 +116,32 @@
               >
                 Address Information
               </h2>
+              @if(user.address){
               <div *ngIf="!isEdit" class="space-y-3">
                 <div>
                   <p class="text-sm text-gray-500">Street</p>
-                  <p class="font-medium">{{ user.address.street }}</p>
+                  <p class="font-medium">{{ user.address?.street }}</p>
                 </div>
                 <div>
                   <p class="text-sm text-gray-500">City</p>
-                  <p class="font-medium">{{ user.address.city }}</p>
+                  <p class="font-medium">{{ user.address?.city }}</p>
                 </div>
                 <div>
                   <p class="text-sm text-gray-500">State</p>
-                  <p class="font-medium">{{ user.address.state }}</p>
+                  <p class="font-medium">{{ user.address?.state }}</p>
                 </div>
                 <div>
                   <p class="text-sm text-gray-500">Country</p>
-                  <p class="font-medium">{{ user.address.country }}</p>
+                  <p class="font-medium">{{ user.address?.country }}</p>
                 </div>
                 <div>
                   <p class="text-sm text-gray-500">ZIP Code</p>
-                  <p class="font-medium">{{ user.address.zip }}</p>
+                  <p class="font-medium">{{ user.address?.zip }}</p>
                 </div>
               </div>
-
+              }@else{
+              <div class="text-sm text-gray-500">No address provided</div>
+              }
               <form *ngIf="isEdit" formGroupName="address" class="space-y-4">
                 <div>
                   <label class="block text-sm text-gray-500 mb-1">Street</label>

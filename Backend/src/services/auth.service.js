@@ -12,11 +12,11 @@ async function registerUser(user) {
 async function loginUser(email, password) {
   const user = await User.findOne({ email }).select("+password");
   if (!user) {
-    throw new AppError(401, "Invalid credentials");
+    throw new AppError(403, "Invalid credentials");
   }
   const isMatch = await user.comparePassword(password);
   if (!isMatch) {
-    throw new AppError(401, "Invalid credentials");
+    throw new AppError(403, "Invalid credentials");
   }
   return user.generateAuthToken();
 }

@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const helmet = require("helmet");
 require("dotenv").config();
 
 const connectDB = require("./config/DB_connection");
@@ -12,6 +13,7 @@ const { expenseRoute } = require("./routes/expense.routes");
 const { budgetRoute } = require("./routes/budget.routes");
 const { dashboardRoute } = require("./routes/dashboard.routes");
 const { exportRotue } = require("./routes/exports.routes");
+
 require("./corn/invoiceReminder.cron");
 const app = express();
 
@@ -22,6 +24,7 @@ app.use(
     exposedHeaders: ["Content-Disposition"],
   })
 );
+app.use(helmet());
 app.set("view engine", "ejs");
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

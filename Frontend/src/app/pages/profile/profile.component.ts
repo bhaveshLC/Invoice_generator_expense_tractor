@@ -60,11 +60,11 @@ export class ProfileComponent implements OnInit {
         name: this.user.name,
         email: this.user.email,
         address: {
-          street: this.user.address.street,
-          city: this.user.address.city,
-          state: this.user.address.state,
-          country: this.user.address.country,
-          zip: this.user.address.zip
+          street: this.user.address?.street,
+          city: this.user.address?.city,
+          state: this.user.address?.state,
+          country: this.user.address?.country,
+          zip: this.user.address?.zip
         }
       });
     });
@@ -100,11 +100,11 @@ export class ProfileComponent implements OnInit {
         name: this.user.name,
         email: this.user.email,
         address: {
-          street: this.user.address.street,
-          city: this.user.address.city,
-          state: this.user.address.state,
-          country: this.user.address.country,
-          zip: this.user.address.zip
+          street: this.user.address?.street,
+          city: this.user.address?.city,
+          state: this.user.address?.state,
+          country: this.user.address?.country,
+          zip: this.user.address?.zip
         }
       });
     }

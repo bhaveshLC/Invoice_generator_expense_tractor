@@ -14,7 +14,7 @@ export class AuthService {
     return this.httpService.post('auth/login', body)
   }
   register(body: any) {
-    return this.httpService.post('register', body)
+    return this.httpService.post('auth/register', body)
   }
   logout() {
     localStorage.removeItem('token');

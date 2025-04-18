@@ -1,4 +1,5 @@
 const Invoice = require("../models/invoice.model");
+const User = require("../models/user.model");
 const invoiceService = require("../services/invoice.service");
 const PDFService = require("../services/pdf.service");
 const { AppError } = require("../utils/errorHandler");
@@ -81,7 +82,11 @@ async function getInvoicePDF(req, res) {
     if (!invoice) {
       throw new AppError(404, "Invoice not found");
     }
-    const pdfBuffer = await PDFService.generateInvoicePDF(invoice);
+    const user = await User.findById(invoice.user);
+    if (!user) {
+      throw new AppError(404, "User not found");
+    }
+    const pdfBuffer = await PDFService.generateInvoicePDF(invoice, user);
     res.set({
       "Content-Type": "application/pdf",
       "Content-Disposition": `attachment; filename=invoice-${invoice._id}.pdf`,

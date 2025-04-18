@@ -4,7 +4,7 @@ const path = require("path");
 const fs = require("fs").promises;
 
 class PDFService {
-  static async generateInvoicePDF(invoice, responseStream = null) {
+  static async generateInvoicePDF(invoice, user, responseStream = null) {
     const subtotal = invoice.items.reduce(
       (sum, item) => sum + item.price * item.quantity,
       0
@@ -19,6 +19,7 @@ class PDFService {
       subtotal,
       taxAmount,
       total,
+      user,
     });
 
     const browser = await puppeteer.launch({
