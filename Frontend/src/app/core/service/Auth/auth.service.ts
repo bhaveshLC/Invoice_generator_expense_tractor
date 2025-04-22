@@ -20,4 +20,13 @@ export class AuthService {
     localStorage.removeItem('token');
     this.router.navigate(['/login']);
   }
+  forgotPassword(email: string) {
+    return this.httpService.post('auth/forgot-password', { email })
+  }
+  verifyOTP(email: string, otp: string) {
+    return this.httpService.post('auth/verify-otp', { email, otp })
+  }
+  resetPassword(resetToken: string, password: string) {
+    return this.httpService.post('auth/reset-password', { resetToken, password })
+  }
 }

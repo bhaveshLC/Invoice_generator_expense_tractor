@@ -125,7 +125,6 @@ async function getInvoiceById(invoiceId, userId) {
 }
 
 async function updateInvoice(invoiceId, userId, updatedData) {
-  console.log(updatedData);
   const invoice = await Invoice.findOneAndUpdate(
     { _id: invoiceId, user: userId },
     updatedData,
@@ -170,7 +169,6 @@ async function sendInvoice(invoiceId, userId) {
   if (!pdfBuffer) {
     throw new AppError(400, "PDF is not generated...");
   }
-  console.log("PDF Buffer length:", pdfBuffer?.length);
 
   const emailBody = `
   <div style="font-family: Arial, sans-serif; color: #333;">
@@ -236,7 +234,6 @@ async function sendInvoiceReminder() {
     },
     status: { $ne: "Paid" },
   }).populate("user", "name email");
-  console.log(invoices);
   for (const invoice of invoices) {
     const emailBody = `
       <div style="font-family: Arial, sans-serif; color: #333;">
@@ -260,7 +257,6 @@ async function sendInvoiceReminder() {
     });
   }
 
-  console.log(`${invoices.length} reminders sent.`);
 }
 module.exports = {
   getDashboardData,

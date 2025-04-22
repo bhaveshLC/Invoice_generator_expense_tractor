@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { CommonModule } from '@angular/common';
 import { UserService } from '../../core/service/user/user.service';
 import { ToastService } from '../../core/service/Toast/toast.service';
+import { LoaderComponent } from "../../core/shared/loader/loader.component";
 
 interface Address {
   street: string;
@@ -26,7 +27,7 @@ interface User {
 
 @Component({
   selector: "app-profile",
-  imports: [FormsModule, CommonModule, ReactiveFormsModule],
+  imports: [FormsModule, CommonModule, ReactiveFormsModule, LoaderComponent],
   templateUrl: "./profile.component.html",
   styleUrl: "./profile.component.css"
 })
@@ -79,6 +80,7 @@ export class ProfileComponent implements OnInit {
   }
   updateProfile() {
     if (this.userForm.valid && this.user) {
+      this.isLoading = true
       this.userService.updateUser(this.userForm.value).subscribe({
         next: (res: any) => {
           this.user = res.data.user;
@@ -88,6 +90,9 @@ export class ProfileComponent implements OnInit {
         error: (err) => {
           console.error('Error updating user:', err);
           this.toastService.showAlert('error', 'Error', err.error.message)
+        },
+        complete: () => {
+          this.isLoading = false
         }
       });
     } else {
@@ -119,5 +124,24 @@ export class ProfileComponent implements OnInit {
         this.markFormGroupTouched(control);
       }
     });
+  }
+  updateProfilePicture(event: any) {
+    const file = event.target.files[0];
+    if (file) {
+      this.isUploading = true
+      this.userService.updateUserProfile(file).subscribe({
+        next: (res: any) => {
+          this.user.profileLogo = res.data.url;
+          this.toastService.showAlert('success', 'Success', 'Profile picture updated successfully.')
+        },
+        error: (err) => {
+          console.error('Error updating profile picture:', err);
+          this.toastService.showAlert('error', 'Error', err.error.message)
+        },
+        complete: () => {
+          this.isUploading = false
+        }
+      });
+    }
   }
 }

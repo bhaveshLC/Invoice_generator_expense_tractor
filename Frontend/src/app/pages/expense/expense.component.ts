@@ -7,10 +7,11 @@ import { category } from '../../Evironment';
 import { FormsModule } from '@angular/forms';
 import { PaginationComponent } from "../../core/shared/pagination/pagination.component";
 import { EditExpenseComponent } from "../components/edit-expense/edit-expense.component";
+import { LoaderComponent } from "../../core/shared/loader/loader.component";
 
 @Component({
   selector: 'app-expense',
-  imports: [FormsModule, CommonModule, AddExpenseComponent, DatePipe, ConfirmationDialogComponent, PaginationComponent, EditExpenseComponent],
+  imports: [FormsModule, CommonModule, AddExpenseComponent, DatePipe, ConfirmationDialogComponent, PaginationComponent, EditExpenseComponent, LoaderComponent],
   templateUrl: './expense.component.html',
   styleUrl: './expense.component.css'
 })
@@ -19,6 +20,7 @@ export class ExpenseComponent {
   showAddExpenseModal = false
   showDeleteConfirmation = false
   showEditExpenseModal = false
+  isLoading: boolean = false
   currentExpense: any
   categories = category;
   filters = {
@@ -41,6 +43,7 @@ export class ExpenseComponent {
     this.filters.monthYear = `${year}-${month}`;
   }
   loadExpenses(): void {
+    this.isLoading = true
     this.expenseService.getAllExpenses(this.filters).subscribe(
       (res: any) => {
         this.expenses = res.data.expenses
@@ -50,6 +53,9 @@ export class ExpenseComponent {
       (error) => {
         console.error("Error loading expenses", error)
       },
+      () => {
+        this.isLoading = false
+      }
     )
   }
   applyFilters() {
@@ -83,7 +89,6 @@ export class ExpenseComponent {
   }
   deleteExpense(): void {
     if (this.currentExpense) {
-      console.log(this.currentExpense)
       this.expenseService.removeExpense(this.currentExpense._id).subscribe(
         () => {
           this.loadExpenses()

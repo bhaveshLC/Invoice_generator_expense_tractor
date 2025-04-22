@@ -12,7 +12,6 @@ export class PaginationComponent {
   @Output() pageChanged = new EventEmitter<any>();
   onUpdatePage(i: number) {
     this.currentPage = i
-    console.log("currentPage ", this.currentPage)
     this.pageChanged.emit(this.currentPage)
   }
 }

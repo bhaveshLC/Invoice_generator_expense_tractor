@@ -3,10 +3,11 @@ import { Chart } from 'chart.js';
 import { ExpenseService } from '../../core/service/expense/expense.service';
 import { InvoiceService } from '../../core/service/invoice/invoice.service';
 import { ChartComponent } from "../../core/shared/chart/chart.component";
+import { LoaderComponent } from "../../core/shared/loader/loader.component";
 
 @Component({
   selector: 'app-reports',
-  imports: [ChartComponent],
+  imports: [ChartComponent, LoaderComponent],
   templateUrl: './reports.component.html',
   styleUrl: './reports.component.css'
 })
@@ -57,58 +58,58 @@ export class ReportsComponent {
         incomeByMonth[month] += invoice.total
       }
     })
-    const ctx = document.getElementById("monthlyChart") as HTMLCanvasElement
-    // this.monthlyChartData = {
-    //   labels: months,
-    //   datasets: [
-    //     {
-    //       label: "Income",
-    //       data: incomeByMonth,
-    //       backgroundColor: "rgba(59, 130, 246, 0.5)",
-    //       borderColor: "rgb(59, 130, 246)",
-    //       borderWidth: 1,
-    //     },
-    //     {
-    //       label: "Expenses",
-    //       data: expensesByMonth,
-    //       backgroundColor: "rgba(239, 68, 68, 0.5)",
-    //       borderColor: "rgb(239, 68, 68)",
-    //       borderWidth: 1,
-    //     },
-    //   ],
-    // }
-    this.onChartRendered();
-    new Chart(ctx, {
-      type: "bar",
-      data: {
-        labels: months,
-        datasets: [
-          {
-            label: "Income",
-            data: incomeByMonth,
-            backgroundColor: "rgba(59, 130, 246, 0.5)",
-            borderColor: "rgb(59, 130, 246)",
-            borderWidth: 1,
-          },
-          {
-            label: "Expenses",
-            data: expensesByMonth,
-            backgroundColor: "rgba(239, 68, 68, 0.5)",
-            borderColor: "rgb(239, 68, 68)",
-            borderWidth: 1,
-          },
-        ],
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        scales: {
-          y: {
-            beginAtZero: true,
-          },
+    // const ctx = document.getElementById("monthlyChart") as HTMLCanvasElement
+    this.monthlyChartData = {
+      labels: months,
+      datasets: [
+        {
+          label: "Income",
+          data: incomeByMonth,
+          backgroundColor: "rgba(59, 130, 246, 0.5)",
+          borderColor: "rgb(59, 130, 246)",
+          borderWidth: 1,
         },
-      },
-    })
+        {
+          label: "Expenses",
+          data: expensesByMonth,
+          backgroundColor: "rgba(239, 68, 68, 0.5)",
+          borderColor: "rgb(239, 68, 68)",
+          borderWidth: 1,
+        },
+      ],
+    }
+    this.onChartRendered();
+    // new Chart(ctx, {
+    //   type: "bar",
+    //   data: {
+    //     labels: months,
+    //     datasets: [
+    //       {
+    //         label: "Income",
+    //         data: incomeByMonth,
+    //         backgroundColor: "rgba(59, 130, 246, 0.5)",
+    //         borderColor: "rgb(59, 130, 246)",
+    //         borderWidth: 1,
+    //       },
+    //       {
+    //         label: "Expenses",
+    //         data: expensesByMonth,
+    //         backgroundColor: "rgba(239, 68, 68, 0.5)",
+    //         borderColor: "rgb(239, 68, 68)",
+    //         borderWidth: 1,
+    //       },
+    //     ],
+    //   },
+    //   options: {
+    //     responsive: true,
+    //     maintainAspectRatio: false,
+    //     scales: {
+    //       y: {
+    //         beginAtZero: true,
+    //       },
+    //     },
+    //   },
+    // })
   }
   categoryChartData: any
   renderCategoryChart(): void {
@@ -122,7 +123,6 @@ export class ReportsComponent {
 
     const categoryLabels = Object.keys(categories)
     const categoryData = Object.values(categories)
-
     this.categoryChartData = {
       labels: categoryLabels,
       datasets: [

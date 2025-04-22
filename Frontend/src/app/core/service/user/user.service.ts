@@ -16,4 +16,9 @@ export class UserService {
   updateUser(updatedUser: any) {
     return this.httpService.put('users/self', updatedUser)
   }
+  updateUserProfile(image: any) {
+    const formData = new FormData();
+    formData.append('profile', image);
+    return this.httpService.put('users/self/profile-picture', formData)
+  }
 }

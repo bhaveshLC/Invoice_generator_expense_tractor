@@ -5,10 +5,11 @@ import { CommonModule, CurrencyPipe } from '@angular/common';
 import { AddBudgetComponent } from "../components/add-budget/add-budget.component";
 import { ToastService } from '../../core/service/Toast/toast.service';
 import { FormsModule } from '@angular/forms';
+import { LoaderComponent } from "../../core/shared/loader/loader.component";
 
 @Component({
   selector: 'app-budget-list',
-  imports: [FormsModule, CommonModule, CurrencyPipe, ConfirmationDialogComponent, AddBudgetComponent],
+  imports: [FormsModule, CommonModule, CurrencyPipe, ConfirmationDialogComponent, AddBudgetComponent, LoaderComponent],
   templateUrl: './budget-list.component.html',
   styleUrl: './budget-list.component.css'
 })
@@ -23,9 +24,10 @@ export class BudgetListComponent {
   budgetSummaries: { category: string; spentAmount: number; budgetAmount: number; percentageSpent: number; remainingAmount: number; }[] = [];
   showBudgetModal = false
   showDeleteConfirmation = false
+  loadDataCount = 0
+  isLoading: boolean = false
   currentBudget: any
   isEditMode = false
-  loading = false
   toastService = inject(ToastService)
   availableYears: number[] = []
   selectedMonth: any
@@ -33,13 +35,13 @@ export class BudgetListComponent {
   constructor(private budgetService: BudgetService) { }
   month_Year: any
   ngOnInit(): void {
+    this.isLoading = true
     this.initializeMonthYear()
     this.loadBudgets()
     this.loadBudgetSummaries()
   }
 
   loadBudgets(): void {
-    this.loading = true
     this.budgetService.getBudgets(this.month_Year).subscribe({
       next: (res: any) => {
         this.budgets = res.data.budgets.map((budget: any) => ({
@@ -49,6 +51,12 @@ export class BudgetListComponent {
       },
       error: (err) => {
         console.error('Error loading budgets:', err);
+      },
+      complete: () => {
+        this.loadDataCount++;
+        if (this.loadDataCount === 2) {
+          this.isLoading = false
+        }
       }
     });
   }
@@ -60,22 +68,25 @@ export class BudgetListComponent {
   }
 
   onMonthChange() {
+    this.loadDataCount = 0;
+    this.isLoading = true
     this.loadBudgets();
     this.loadBudgetSummaries()
   }
   loadBudgetSummaries(): void {
-    console.log(this.month_Year)
     this.budgetService.getBudgetSummary(this.month_Year).subscribe(
       (res: any) => {
-        console.log(res)
         this.budgetSummaries = res.data
-        console.log('summary', this.budgetSummaries)
-        this.loading = false
       },
       (error) => {
         console.error("Error loading budget summaries", error)
-        this.loading = false
       },
+      () => {
+        this.loadDataCount++;
+        if (this.loadDataCount === 2) {
+          this.isLoading = false
+        }
+      }
     )
   }
 
@@ -104,7 +115,6 @@ export class BudgetListComponent {
   confirmDeleteBudget(budget: any): void {
     this.currentBudget = budget
     this.showDeleteConfirmation = true
-    console.log(this.showDeleteConfirmation)
   }
 
   deleteBudget(): void {

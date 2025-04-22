@@ -13,12 +13,17 @@ import { ProfileComponent } from './pages/profile/profile.component';
 import { authGuard } from './core/guard/auth.guard';
 import { userGuard } from './core/guard/user.guard';
 import { EditInvoiceComponent } from './pages/components/edit-invoice/edit-invoice.component';
+import { ForgotPasswordComponent } from './pages/Auth/forgot-password/forgot-password.component';
+import { VerifyOTPComponent } from './pages/Auth/verify-otp/verify-otp.component';
+import { ResetPasswordComponent } from './pages/Auth/reset-password/reset-password.component';
 
 export const routes: Routes = [
     { path: '', redirectTo: '/login', pathMatch: 'full' },
     { path: 'login', component: LoginComponent, canActivate: [authGuard] },
     { path: 'register', component: RegisterComponent, canActivate: [authGuard] },
-
+    { path: 'forgot-password', component: ForgotPasswordComponent, canActivate: [authGuard] },
+    { path: 'verify-otp/:email', component: VerifyOTPComponent, canActivate: [authGuard] },
+    { path: 'reset-password', component: ResetPasswordComponent, canActivate: [authGuard] },
     {
         path: '',
         component: LayoutComponent,

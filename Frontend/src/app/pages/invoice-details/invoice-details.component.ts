@@ -5,10 +5,11 @@ import { CommonModule } from '@angular/common';
 import { ConfirmationDialogComponent } from "../../core/shared/confirmation-dialog/confirmation-dialog.component";
 import { ToastService } from '../../core/service/Toast/toast.service';
 import { UserService } from '../../core/service/user/user.service';
+import { LoaderComponent } from "../../core/shared/loader/loader.component";
 
 @Component({
   selector: 'app-invoice-details',
-  imports: [CommonModule, ConfirmationDialogComponent],
+  imports: [CommonModule, ConfirmationDialogComponent, LoaderComponent],
   templateUrl: './invoice-details.component.html',
   styleUrl: './invoice-details.component.css'
 })
@@ -17,6 +18,7 @@ export class InvoiceDetailsComponent implements OnInit {
   user: any
   loading = false
   isLoading: boolean = false
+  isDataLoading: boolean = false
   pdfLoading = false
   error = ""
   showDeleteConfirmation = false
@@ -31,7 +33,7 @@ export class InvoiceDetailsComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.loading = true
+    this.isDataLoading = true
     const id = this.route.snapshot.paramMap.get("id")
     this.userService.getSelf().subscribe((res: any) => {
       this.user = res.data.user
@@ -40,17 +42,17 @@ export class InvoiceDetailsComponent implements OnInit {
       this.invoiceService.getInvoice(id).subscribe(
         (res: any) => {
           this.invoice = res.data.invoice
-          this.loading = false
         },
         (error) => {
           this.error = "Failed to load invoice details"
-          this.loading = false
           console.error("Error loading invoice", error)
+        }, () => {
+          this.isDataLoading = false
         }
       )
     } else {
       this.error = "Invoice ID not found"
-      this.loading = false
+      this.isDataLoading = false
     }
   }
 

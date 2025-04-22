@@ -53,7 +53,6 @@ export class EditInvoiceComponent {
     if (!this.invoice) return
 
     this.loading = true
-    console.log(updatedInvoice)
     this.invoiceService.updateInvoice(this.invoice._id, updatedInvoice).subscribe(
       (result: any) => {
         this.invoice = result.data.invoice

@@ -3,11 +3,12 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { ChartComponent } from "../../core/shared/chart/chart.component";
 import { DashboardService } from '../../core/service/Dashboard/dashboard.service';
 import { RouterLink } from '@angular/router';
+import { LoaderComponent } from "../../core/shared/loader/loader.component";
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, CurrencyPipe, ChartComponent, RouterLink],
+  imports: [CommonModule, CurrencyPipe, ChartComponent, RouterLink, LoaderComponent],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
 })
@@ -17,7 +18,7 @@ export class DashboardComponent implements OnInit {
   expenseTotal = 0;
   paidAmount = 0;
   unpaidAmount = 0;
-
+  isLoading: boolean = false;
   recentInvoices: any[] = [];
   recentExpenses: any[] = [];
 
@@ -36,7 +37,7 @@ export class DashboardComponent implements OnInit {
     this.loadData()
   }
   loadData() {
-
+    this.isLoading = true
     const backgroundColors = [
       "#4f86f7", // Food
       "#34c38f", // Transport
@@ -74,7 +75,6 @@ export class DashboardComponent implements OnInit {
           },
         ],
       };
-      console.log(this.expenseChartData)
       this.monthlySummaryData = {
         labels: data.monthlySummaryData.labels || [],
         datasets: [{
@@ -82,6 +82,7 @@ export class DashboardComponent implements OnInit {
           backgroundColor: "#4f86f7"
         }]
       };
+      this.isLoading = false
       this.isDataLoaded.set(true)
     });
   }

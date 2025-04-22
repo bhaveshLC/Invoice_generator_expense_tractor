@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const helmet = require("helmet");
+const path = require("path");
 require("dotenv").config();
 
 const connectDB = require("./config/DB_connection");
@@ -28,6 +29,7 @@ app.use(helmet());
 app.set("view engine", "ejs");
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use("/api/auth", authRoute);
 app.use("/api/dashboard", authMiddleware, dashboardRoute);
 app.use("/api/users", authMiddleware, userRoute);

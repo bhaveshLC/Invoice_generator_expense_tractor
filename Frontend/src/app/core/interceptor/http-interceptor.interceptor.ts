@@ -17,7 +17,7 @@ export const httpInterceptorInterceptor: HttpInterceptorFn = (req, next) => {
   const toastService = inject(ToastService)
   return next(req).pipe(
     catchError((error: HttpErrorResponse) => {
-      if (error.status === 401 || error.status === 403) {
+      if (error.status === 401) {
         authService.logout();
         toastService.showAlert('error', 'Token expired', 'please login again')
       }

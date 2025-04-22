@@ -1,3 +1,6 @@
+@if(isDataLoading){
+<app-loader />
+}@else{
 <div class="bg-white rounded-lg shadow-lg p-6">
   <div class="flex justify-between items-start mb-8">
     <div>
@@ -216,7 +219,7 @@
     Send Email
   </button>
 </div>
-
+}
 <app-confirmation-dialog
   *ngIf="showEmailConfirmation"
   title="Send Email"

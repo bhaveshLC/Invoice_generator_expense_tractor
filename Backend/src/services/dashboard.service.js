@@ -14,16 +14,13 @@ async function getDashboardData(userId) {
       { $group: { _id: null, total: { $sum: "$total" } } },
     ]);
 
-    // Invoice count
     const invoiceCount = await Invoice.countDocuments({ user: userId });
 
-    // Paid invoice total
     const paidAgg = await Invoice.aggregate([
       { $match: { user: new mongoose.Types.ObjectId(userId), status: "Paid" } },
       { $group: { _id: null, total: { $sum: "$total" } } },
     ]);
 
-    // Unpaid invoice total
     const unpaidAgg = await Invoice.aggregate([
       {
         $match: { user: new mongoose.Types.ObjectId(userId), status: "Unpaid" },
@@ -31,12 +28,10 @@ async function getDashboardData(userId) {
       { $group: { _id: null, total: { $sum: "$total" } } },
     ]);
 
-    // Recent invoices
     const recentInvoices = await Invoice.find({ user: userId })
       .sort({ createdAt: -1 })
       .limit(5)
       .select("clientName total status");
-    // Recent expenses
     const recentExpenses = await Expense.find({ user: userId })
       .sort({ createdAt: -1 })
       .limit(5)

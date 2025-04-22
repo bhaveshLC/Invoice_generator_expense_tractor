@@ -98,7 +98,6 @@ async function getBudgetSummary(userId, queryData) {
     expenses.forEach((e) => {
       spentMap[e._id] = e.spentAmount;
     });
-    console.log(spentMap);
     const summary = budgets.map((b) => {
       const spent = spentMap[b.category] || 0;
       const percentage = Math.min(((spent / b.amount) * 100).toFixed(2), 100);

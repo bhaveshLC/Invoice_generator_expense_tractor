@@ -1,5 +1,8 @@
 <div class="flex-1 overflow-auto">
   <div class="p-6">
+    @if(isLoading){
+    <app-loader />
+    } @else{
     <div class="flex justify-between items-center mb-6">
       <h1 class="text-2xl font-bold">Expenses</h1>
       <div class="flex items-center">
@@ -145,6 +148,7 @@
         (pageChanged)="onpageChange($event)"
       />
     </div>
+    }
   </div>
 </div>
 <app-confirmation-dialog

@@ -17,6 +17,17 @@ const updateUser = async (req, res) => {
     },
   });
 };
+
+const uploadProfilePicture = async (req, res) => {
+  const { path } = req.file;
+  const result = await userService.uploadProfilePicture(req.userId, path);
+  res.status(200).json({
+    status: "success",
+    data: {
+      url: result,
+    },
+  });
+};
 const deleteUser = async (req, res) => {
   await userService.deleteUser(req.userId);
   res.status(204).json({
@@ -24,4 +35,4 @@ const deleteUser = async (req, res) => {
     data: null,
   });
 };
-module.exports = { getSelf, updateUser, deleteUser };
+module.exports = { getSelf, updateUser, uploadProfilePicture, deleteUser };

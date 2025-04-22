@@ -4,10 +4,11 @@ import { CommonModule, DatePipe } from '@angular/common';
 import { ConfirmationDialogComponent } from "../../core/shared/confirmation-dialog/confirmation-dialog.component";
 import { Router, RouterLink } from '@angular/router';
 import { PaginationComponent } from "../../core/shared/pagination/pagination.component";
+import { LoaderComponent } from "../../core/shared/loader/loader.component";
 
 @Component({
   selector: 'app-invoice-list',
-  imports: [CommonModule, DatePipe, RouterLink, ConfirmationDialogComponent, PaginationComponent],
+  imports: [CommonModule, DatePipe, RouterLink, ConfirmationDialogComponent, PaginationComponent, LoaderComponent],
   templateUrl: './invoice-list.component.html',
   styleUrl: './invoice-list.component.css'
 })
@@ -16,6 +17,7 @@ export class InvoiceListComponent {
   showAddInvoiceModal = false;
   showEditInvoiceModal = false;
   showDeleteConfirmation = false
+  isLoading: boolean = false
   currentInvoice: any;
   router = inject(Router)
   currentPage = 1;
@@ -27,16 +29,19 @@ export class InvoiceListComponent {
   }
 
   loadInvoices(): void {
+    this.isLoading = true
     this.invoiceService.getInvoices(this.currentPage)
       .subscribe(
         (res: any) => {
-          console.log(res)
           this.invoices = res.data.invoices;
           this.currentPage = res.data.page
           this.pages = Array.from({ length: res.data.totalPages }, (_, i) => i + 1)
         },
         error => {
           console.error('Error loading invoices', error);
+        },
+        () => {
+          this.isLoading = false
         }
       );
   }
@@ -61,7 +66,6 @@ export class InvoiceListComponent {
       );
   }
   onpageChange(e: any) {
-    console.log("e", e)
     this.currentPage = e
     this.loadInvoices()
   }
